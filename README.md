@@ -17,7 +17,7 @@
 
 此外，该篇章涉及的知识还包括设计思路、分析思路、如何寻找思路、如何改善思路、通过思路如何设计、设计过程中出现问题如何解决问题以及实现过程中如何确定应用那些知识等。
 
-[网站留言评论系统-初稿的文章介绍](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system/)
+详细介绍：[网站留言评论系统-初稿的文章介绍](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system/)
 ## 涉及的计算机知识范围
 + [C语言基础知识](https://www.reversesacle.com/computer-science/programming/c-language/basis/c/cpart1/)
 + [计算机网络(运输层和应用层)基础知识](https://www.reversesacle.com/computer-science/computer-basic/network/nwpart3/)
@@ -27,4 +27,4 @@
 + [HTTP网络通信基础](https://www.reversesacle.com/computer-science/programming/c-language/network-programming/http/)
 + [数据库基础知识与MySQL数据库基础](https://www.reversesacle.com/tags/database/)
 
-## 更新中...
+## 源码编写和教程更新中...
