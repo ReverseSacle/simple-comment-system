@@ -387,16 +387,11 @@ static void GetMethod(i32 sockfd,char* buf,u32 bufSize,i32 i)
 		_LogFileWrite(_LOGPATH,3,"GetMethod: Position ? Request Path: ",url,"\n");
 		_CallDebug(3,"GetMethod: Position ? Request Path: ",url,"\n");
 	}
-/*
-	sprintf(path,"./%s/%s",_ROOTDIR,url);
-	_LogFileWrite(_LOGPATH,3,"GetMethod: Real Path: ",path,"\n");
-	_CallDebug(3,"GetMethod: Real Path: ",path,"\n");
-*/
+
 	_LogFileWrite(_LOGPATH,1,"GetMethod Response...\n");
 	_CallDebug(1,"GetMethod Response...\n");
 
 	/* 返回响应报文 */
-/*	HttpResponse(sockfd,path); */
 	HttpResponse(sockfd,url); 
 }
 

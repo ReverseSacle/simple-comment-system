@@ -65,18 +65,6 @@ function contentAppend(labels,nickNameValue,textsContent,creatat){
 	authorName.innerText = nickNameValue;
 
 	var timeSpend = document.createElement("span");
-/*
-	var oldTimeStamp = new Date(creatat); 
-	var newTimeStamp = new Date(Date.now());
-	var second = Math.floor(Date.now() - creatat) / 1000;
-	var minutes = Math.floor(second / 60);
-	var hours = Math.floor(minutes / 60);
-	var days = Math.floor(hours / 60);
-
-	if(0 != days){ timeSpend.innerText = "" + days + " days ago"; }
-	else if(0 != hours){ timeSpend.innerText = "" + hours + " hours ago"; } 
-	else{ timeSpend.innerText = "" + minutes + " minutes ago"; }
-*/
 	var timeSpace = Date.now() - creatat;
 	var days = timeSpace / 1000 / 60 / 60 / 24;
 	var f_days = Math.floor(days);
@@ -129,20 +117,8 @@ async function buttonClick(host,labels)
 	if(0 != (nickNameValue.length))
 	{
 		/* current time */
-/*
-		var curTime = new Date(Date.now());
-		var _year = curTime.getFullYear();
-		var _month = (curTime.getMonth() + 1).toString().padStart(2, '0');
-		var _day = curTime.getDate().toString().padStart(2, '0');
-		var _hours = curTime.getHours().toString().padStart(2, '0');
-		var _minutes = curTime.getMinutes().toString().padStart(2, '0');
-		var _seconds = curTime.getSeconds().toString().padStart(2, '0');
-		var timeFormat = _year + "-" + _month + "-" + _day + " " +
-                            _hours + ":" + _minutes + ":" + _seconds;
-*/
 		var textsContent = textareaBeautify(texts,texts.cols);
 		var curTime = Date.now();
-/*		var data = nickNameValue + ":" + email.value + ":" + textsContent + ":" + timeFormat; */
 		var data = nickNameValue + ":" + email.value + ":" + textsContent + ":" + curTime; 
 
 		if(true ==  await _PostRequest(host,"/api",data))

@@ -10,14 +10,23 @@ DM=-fPIC -shared
 
 all: httpserver
 
-#Static
+#Product
 httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
 	$(OP) -c _clibs.c
 	$(OP) -c database.c 
 	$(OP) -c http.c
 	ar rcs lib_slibs.a _clibs.o database.o http.o
 	rm -rf _clibs.o database.o http.o
-	$(OP) $(AP1) $(AP2) $(MSPATH) -pthread httpserver.c lib_slibs.a -o httpserver 
+	$(OP) $(AP1) -O2 $(AP2) $(MSPATH) -pthread httpserver.c lib_slibs.a -o httpserver 
+
+#Static
+#httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
+#	$(OP) -c _clibs.c
+#	$(OP) -c database.c 
+#	$(OP) -c http.c
+#	ar rcs lib_slibs.a _clibs.o database.o http.o
+#	rm -rf _clibs.o database.o http.o
+#	$(OP) $(AP1) $(AP2) $(MSPATH) -pthread httpserver.c lib_slibs.a -o httpserver 
 
 #Dynamic
 #httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c

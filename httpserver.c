@@ -47,15 +47,15 @@ int main()
 	ev.events = EPOLLIN;
 	epoll_ctl(epoll_fd,EPOLL_CTL_ADD,server_fd,&ev);
 
+	_LogFileWrite(_LOGPATH,1,"waiting server connect...\n");
+	_CallDebug(1,"waiting server connect...\n");
+
 	while(true)
 	{
 		struct epoll_event events[MAXCLIENTS];
-		i32 eventNums = epoll_wait(epoll_fd,events,MAXCLIENTS,-1);
+		i32 eventNums = 0;
 		
-		_LogFileWrite(_LOGPATH,1,"waiting server connect...\n");
-		_CallDebug(1,"waiting server connect...\n");
-		
-		if(eventNums < 0)
+		if((eventNums = epoll_wait(epoll_fd,events,MAXCLIENTS,-1)) < 0)
 		{
 			_LogFileWrite(_LOGPATH,1,"main: epoll_wait() Error\n");
 			_CallDebug(1,"main: epoll_wait() Error\n");
