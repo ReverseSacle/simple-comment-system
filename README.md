@@ -27,5 +27,37 @@
 + [有关网络编程的全基础知识(额外包含了Linux环境编程/GCC编译器/GDB调试器)](https://www.reversesacle.com/tags/network-programming/)
 + [HTTP网络通信基础](https://www.reversesacle.com/computer-science/programming/c-language/network-programming/http/)
 + [数据库基础知识与MySQL数据库基础](https://www.reversesacle.com/tags/database/)
+## 源码使用流程详解
+首先，阅览[→Linux(CentOS 7)](https://www.reversesacle.com/computer-science/programming/c-language/network-programming/Linux-basic/)，从**准备条件**部分到**通过客户端连接服务器**部分，以及**客户端(SFTP)命令**部分。
 
+接着，确保Linux虚拟机环境安装了make工具，倘若没有可使用命令 `yum -y install make`
+
+之后，获取源码(Clone地址：`https://github.com/ReverseSacle/simple-comment-system-pre.git`)，通过`SecureCRT`软件连接Linux虚拟机环境，连接之后在顶栏标签处右键选`Connect SFTP Session`来通过SFTP命令向Linux虚拟机环境传入文件。
+
+**目录结构**
+
+httpserver
+- docs
+  - css
+    - comments.css
+  - img
+    - img.png
+  - js
+    - comments.js
+  - index.html
+- _clibs.h
+- _clibs.c
+- database.h
+- database.c
+- http.h
+- http.c
+- httpserver.c
+
+其中`httpserver`为根目录，docs目录以及其以内的目录可通过`cd`与`mkdir`Linux命令的配合来创建，倘若通过SFTP传入的文件位置不对，可通过`mv 文件名 目的路径`命令来移动位置。
+
+注意，需在Linux环境下安装MySQL，详细看该篇文章第一部分的**Linux服务器处理进程的数据库链接**内容。
+
+此外，还需修改`comments.js`文件`window.onload`开头的`_host`变量的值，改为`SecureCRT`连接的IP地址。
+
+最后，在`httpserver`根目录中执行命令`make`，接着执行`./httpserver`即可启动服务端进程，之后在浏览器中的输入栏输入`http://(SecureCRT连接的IP地址)/index.html`，回车即可看到评论系统的前端界面。
 ## 源码解析和教程更新中...
