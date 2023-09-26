@@ -55,7 +55,7 @@ httpserver
 
 其中`httpserver`为根目录，docs目录以及其以内的目录可通过`cd`与`mkdir`Linux命令的配合来创建，倘若通过SFTP传入的文件位置不对，可通过`mv 文件名 目的路径`命令来移动位置。
 
-注意，需在Linux环境下安装MySQL，详细看该篇文章第一部分的**Linux服务器处理进程的数据库链接**内容。
+注意，需在Linux环境下安装MySQL，详细看[该篇文章第一部分](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)的**Linux服务器处理进程的数据库链接**内容。
 
 此外，还需修改`comments.js`文件`window.onload`开头的`_host`变量的值，改为`SecureCRT`连接的IP地址。
 
