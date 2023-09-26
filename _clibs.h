@@ -18,8 +18,6 @@
 #define _LOGPATH "./_httpserver.log"
 #define _DEBUG
 
-pthread_mutex_t mutex1;
-
 i32 _pow(i32 n,i32 m);
 i32 _stoi(const char* strs);
 inline void _CallDebug(const i32 num,...);

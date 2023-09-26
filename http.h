@@ -5,7 +5,6 @@
 #include<sys/socket.h>
 #include<arpa/inet.h>
 #include<sys/stat.h>
-#include<pthread.h>
 #include<sys/epoll.h>
 #include"_clibs.h"
 #include"database.h"
@@ -32,8 +31,6 @@ enum RequestURL
     _DATABASE = 1,
     _API = 2
 };
-
-pthread_mutex_t mutex2;
 
 int ServerSocketConstruct(const u16 port);
 void HttpAccept(i32 sockfd);

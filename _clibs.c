@@ -47,7 +47,6 @@ inline void _CallDebug(const i32 num,...)
 
 void _LogFileWrite(const char* filename,const i32 num,...)
 {
-	pthread_mutex_lock(&mutex1);
 	FILE* source = fopen(filename,"a+");
 	if(NULL == source){ return; }
 
@@ -65,5 +64,4 @@ void _LogFileWrite(const char* filename,const i32 num,...)
 	}
 	va_end(args);
 	fclose(source);
-	pthread_mutex_unlock(&mutex1);
 }

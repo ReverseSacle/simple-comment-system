@@ -238,7 +238,6 @@ static void Response200_DB(i32 sockfd)
 	strcat(buf,"Content-Type: text/plain\r\n");
 	strcat(buf,"Connection: Close\r\n");
 
-	pthread_mutex_lock(&mutex2);
 	MYSQL* mysql = DatabaseConnect();
 	MYSQL_RES* res = GetTableElementStart(mysql,"CommentBlock");
 	if(NULL != res)
@@ -252,7 +251,6 @@ static void Response200_DB(i32 sockfd)
 		GetTableElementEnd(res);
 	}
 	DatabaseConnectClose(mysql);
-	pthread_mutex_unlock(&mutex2);
 	
 	bodyLen = strlen(body);
 	sprintf(temp,"Content-Length: %d\r\n\r\n",bodyLen);

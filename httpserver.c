@@ -11,9 +11,6 @@ void MainExit(i32 sig)
 
 	close(epoll_fd);
 	close(server_fd);
-	
-	pthread_mutex_destroy(&mutex1);
-	pthread_mutex_destroy(&mutex2);
 
 	_LogFileWrite(_LOGPATH,1,"MainEixt end\n");
 	_CallDebug(1,"MainEixt end\n");
@@ -27,9 +24,6 @@ int main()
 	while(i < 100){ signal(i,SIG_IGN); ++i; }
 	signal(2,MainExit);
 	signal(15,MainExit);
-
-	pthread_mutex_init(&mutex1,NULL);
-	pthread_mutex_init(&mutex2,NULL);
 
 	if(-1 == (server_fd = ServerSocketConstruct(80)))
 	{
@@ -82,8 +76,6 @@ int main()
 			}
 		}		
 	}
-	pthread_mutex_destroy(&mutex1);
-	pthread_mutex_destroy(&mutex2);
 	close(epoll_fd);
 	close(server_fd);
 	
