@@ -17,7 +17,7 @@ httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
 	$(OP) -c http.c
 	ar rcs lib_slibs.a _clibs.o database.o http.o
 	rm -rf _clibs.o database.o http.o
-	$(OP) $(AP1) -O2 $(AP2) $(MSPATH) httpserver.c lib_slibs.a -o httpserver 
+	$(OP) $(AP1) -O2 $(MSPATH) httpserver.c lib_slibs.a -o httpserver 
 
 #Static
 #httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c

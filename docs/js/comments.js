@@ -84,7 +84,7 @@ function contentAppend(labels,nickNameValue,textsContent,creatat){
 
 	/* coment box content area start-area */
 	var boxContent = document.createElement("span");
-	boxContent.setAttribute("class","cbox-content");
+	boxContent.setAttribute("class","cbox-conten");
 
 	boxContent.innerHTML = textsContent;
 	commentBoxLable.appendChild(boxContent);

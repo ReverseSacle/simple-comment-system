@@ -19,7 +19,8 @@
 
 在该项目的介绍文章中你能感受到下列所述内容：设计思路、分析思路、如何寻找思路、如何改善思路、通过思路如何设计、设计过程中出现问题如何解决问题、实现过程中如何确定应用那些知识等。
 
-详细介绍：[网站留言评论系统-初稿的(思路与教程)文章](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)
+**源码解析及设计思路** - [网站留言评论系统-初稿的(思路与教程)文章](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)
+
 ## 涉及的计算机知识范围
 + [C语言基础知识](https://www.reversesacle.com/computer-science/programming/c-language/basis/c/cpart1/)
 + [计算机网络(运输层和应用层)基础知识](https://www.reversesacle.com/computer-science/computer-basic/network/nwpart3/)
@@ -61,4 +62,3 @@ httpserver
 此外，还需修改`comments.js`文件`window.onload`开头的`_host`变量的值，改为`SecureCRT`连接的IP地址。
 
 最后，在`httpserver`根目录中执行命令`make`，接着执行`./httpserver`即可启动服务端进程，之后在浏览器中的输入栏输入`http://(SecureCRT连接的IP地址)/index.html`，回车即可看到评论系统的前端界面。
-## 源码解析和教程更新中...

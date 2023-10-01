@@ -9,7 +9,7 @@
 #include"_clibs.h"
 #include"database.h"
 
-#define MAXCLIENTS 100
+#define MAXCLIENTS 200
 
 enum FileType
 {
