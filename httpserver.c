@@ -1,83 +1,39 @@
-#include"http.h"
+#include<stdlib.h>
+#include<signal.h>
+#include"./_http/http.h"
+#include"./_tcp/tcp.h"
 
-i32 server_fd = -1;
-i32 epoll_fd = -1;
-FILE* source = NULL;
-
-void MainExit(i32 sig)
+void ExitAction(int sig)
 {
-	_LogFileWrite(_LOGPATH,1,"\nMainEixt start\n");
-	_CallDebug(1,"\nMainEixt start\n");
-
-	close(epoll_fd);
-	close(server_fd);
-
-	_LogFileWrite(_LOGPATH,1,"MainEixt end\n");
-	_CallDebug(1,"MainEixt end\n");
 	exit(0);
 }
 
 int main()
 {
-	i32 i = 0;
+	int i = 0;
+	while(i < 100){ signal(i++,SIG_IGN); }
+	signal(2,ExitAction);
+	signal(15,ExitAction);
 
-	while(i < 100){ signal(i,SIG_IGN); ++i; }
-	signal(2,MainExit);
-	signal(15,MainExit);
+	int sock_fd = -1;
+	if(-1 == (sock_fd = TcpStream_Construct(80))){ return 0; }
+	if(-1 == TcpStream_ToListen(sock_fd)){ return 0; }
 
-	if(-1 == (server_fd = ServerSocketConstruct(80)))
-	{
-		_LogFileWrite(_LOGPATH,1,"main: ServerSocketConstruct() Error\n");
-		_CallDebug(1,"main: ServerSocketConstruct() Error\n");
-		return 0;
-	}
-
-	epoll_fd = epoll_create(1);
-
-	struct epoll_event ev;
-	u32 epoll_eventSize = sizeof(struct epoll_event);
-
-	ev.data.fd = server_fd;
-	ev.events = EPOLLIN;
-	epoll_ctl(epoll_fd,EPOLL_CTL_ADD,server_fd,&ev);
-
-	_LogFileWrite(_LOGPATH,1,"waiting server connect...\n");
-	_CallDebug(1,"waiting server connect...\n");
-
+	int accept_fd = -1;
+	struct sockaddr_in sock_addr;
+	size_t sock_addr_size = sizeof(struct sockaddr_in);
 	while(true)
 	{
-		struct epoll_event events[MAXCLIENTS];
-		i32 eventNums = 0;
-		
-		if((eventNums = epoll_wait(epoll_fd,events,MAXCLIENTS,-1)) < 0)
-		{
-			_LogFileWrite(_LOGPATH,1,"main: epoll_wait() Error\n");
-			_CallDebug(1,"main: epoll_wait() Error\n");
-			break;
-		}
+		_LogFileWrite(_LOGPATH,1,"main() => Waiting server connect...\n");
+		_CallDebug(1,"main() => Waiting server connect...\n");
 
-		for(i = 0;i < eventNums;++i)
-		{
-			if((server_fd == events[i].data.fd) && (events[i].events & EPOLLIN))
-			{		
-				i32 socklen = sizeof(struct sockaddr_in);
-				struct sockaddr_in client_addr;
-				i32 accept_fd = accept(server_fd,(struct sockaddr*)&client_addr,(socklen_t*)&socklen);
-				
-				memset(&ev,0,epoll_eventSize);
-				ev.data.fd = accept_fd;
-				ev.events = EPOLLIN;
-				epoll_ctl(epoll_fd,EPOLL_CTL_ADD,accept_fd,&ev);
-			}
-			else
-			{
-				HttpAccept(events[i].data.fd);
-				close(events[i].data.fd);
-			}
-		}		
+		accept_fd = accept(sock_fd,(struct sockaddr*)&sock_addr,(socklen_t*)&sock_addr_size);
+
+		_LogFileWrite(_LOGPATH,1,"main() => Client connected\n");
+		_CallDebug(1,"main() => Client connected\n");
+
+		HttpServer_Accept(accept_fd);
+		close(accept_fd);
 	}
-	close(epoll_fd);
-	close(server_fd);
-	
 	return 0;
 }

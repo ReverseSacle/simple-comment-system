@@ -1,38 +1,43 @@
 OP=gcc
 AP1=-Wall
 AP2=-g
+LOG=-D _LOG
+DEBUG=-D _DEBUG
 
 MYSQL=$$(mysql_config --cflags --libs)
 MSPATH=-L/usr/lib64/mysql -lmysqlclient 
-LIBPATH=-L. -l_slibs
 
-DM=-fPIC -shared
+tcp: ./_tcp/tcp.*
+	$(OP) $(AP1) ./_tcp/tcp.c 
 
-all: httpserver
+http_response: ./_tcp/tcp.* ./_http/_response.* ./mylibs.*
+	$(OP) $(AP1) ./_tcp/tcp.c ./_http/_response.c
 
-#Product
-httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
-	$(OP) -c _clibs.c
-	$(OP) -c database.c 
-	$(OP) -c http.c
-	ar rcs lib_slibs.a _clibs.o database.o http.o
-	rm -rf _clibs.o database.o http.o
-	$(OP) $(AP1) -O2 $(MSPATH) httpserver.c lib_slibs.a -o httpserver 
+http_response_db: ./_tcp/tcp.* ./_http/_response.* ./mylibs.* ./_database/db.*
+	$(OP) $(AP1) ./_tcp/tcp.c ./_http/_response.c ./_database/db.c
 
-#Static
-#httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
-#	$(OP) -c _clibs.c
-#	$(OP) -c database.c 
-#	$(OP) -c http.c
-#	ar rcs lib_slibs.a _clibs.o database.o http.o
-#	rm -rf _clibs.o database.o http.o
-#	$(OP) $(AP1) $(AP2) $(MSPATH) -pthread httpserver.c lib_slibs.a -o httpserver 
+http: ./_tcp/tcp.* ./_http/http.* ./mylibs.*
+	$(OP) $(AP1) ./_tcp/tcp.c ./_http/http.c ./mylibs.c
 
-#Dynamic
-#httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
-#	$(OP) $(DM) $(MYSQL) http.c database.c _clibs.c -o lib_slibs.so
-#	$(OP) $(AP1) $(AP2) $(LIBPATH) -pthread httpserver.c -o httpserver 
-#	export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:/root/httpserver
+database: ./_database/db.* ./mylibs.*
+	$(OP) $(AP1) ./_database/db.c ./mylibs.c 
+
+httptest: ./_tcp/tcp.* ./_http/http.* ./_http/_response.* ./mylibs.* ./httpserver.c
+	$(OP) $(AP1) $(DEBUG) ./_tcp/tcp.c ./_http/http.c ./_http/_response.c \
+	./mylibs.c httpserver.c -o httpserver 
+
+httptest_db: ./_tcp/tcp.* ./_http/http.* ./_http/_response.* \
+			./mylibs.* ./httpserver.c ./_database/db.*
+	$(OP) $(AP1) $(DEBUG) $(MSPATH) ./_tcp/tcp.c ./_http/http.c ./_http/_response.c \
+	./mylibs.c ./_database/db.c httpserver.c -o httpserver 
+
+httptest_db_log: ./_tcp/tcp.* ./_http/http.* ./_http/_response.* \
+			./mylibs.* ./httpserver.c ./_database/db.*
+	$(OP) $(AP1) $(DEBUG) $(LOG) $(MSPATH) ./_tcp/tcp.c ./_http/http.c ./_http/_response.c \
+	./mylibs.c ./_database/db.c httpserver.c -o httpserver 
+
+openport:
+	firewall-cmd --zone=public --add-port=80/tcp --permanent
 
 clean:
 	rm -rf httpserver *.a *.log *.so
