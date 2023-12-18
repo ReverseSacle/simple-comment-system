@@ -3,43 +3,45 @@
 /* 获取HTTP请求方法 */
 int GetMethodType(const char* method_buf)
 {
-	const char* get = "GET";
-	const char* post = "POST";
-	const char* put = "PUT";
-	const char* delete = "DELETE";
-	const char* head = "HEAD";
-	const char* options = "OPTIONS";
-	const char* patch = "PATCH";
-	const char* connect = "CONNECT";
-	const char* trace = "TRACE";
 	const size_t buf_len = strlen(method_buf);
+	if(0 == buf_len){ return -1; }
+
+	const char* _get = "GET";
+	const char* _post = "POST";
+	const char* _put = "PUT";
+	const char* _delete = "DELETE";
+	const char* _head = "HEAD";
+	const char* _options = "OPTIONS";
+	const char* _patch = "PATCH";
+	const char* _connect = "CONNECT";
+	const char* _trace = "TRACE";
 	size_t i = 0;
 
 	while(i < buf_len)
 	{
 		const char ch = toupper(method_buf[i++]);
-		if('\0' != *get && ch == *get){ ++get; }
-		if('\0' != *post && ch == *post){ ++post; }
-		if('\0' != *put && ch == *put){ ++put; }
-		if('\0' != *delete && ch == *delete){ ++delete; }
-		if('\0' != *head && ch == *head){ ++head; }
-		if('\0' != *options && ch == *options){ ++options; }
-		if('\0' != *patch && ch == *patch){ ++patch; }
-		if('\0' != *connect && ch == *connect){ ++connect; }
-		if('\0' != *trace && ch == *trace){ ++trace; }
+		if('\0' != *_get && ch == *_get){ ++_get; }
+		if('\0' != *_post && ch == *_post){ ++_post; }
+		if('\0' != *_put && ch == *_put){ ++_put; }
+		if('\0' != *_delete && ch == *_delete){ ++_delete; }
+		if('\0' != *_head && ch == *_head){ ++_head; }
+		if('\0' != *_options && ch == *_options){ ++_options; }
+		if('\0' != *_patch && ch == *_patch){ ++_patch; }
+		if('\0' != *_connect && ch == *_connect){ ++_connect; }
+		if('\0' != *_trace && ch == *_trace){ ++_trace; }
 	}
 
 	switch(buf_len)
 	{
 		case 3:
 		{
-			if('\0' == *get)
+			if('\0' == *_get)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => GET\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => GET\n");
 				return _GET;
 			}
-			if('\0' == *put)
+			if('\0' == *_put)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => PUT\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => PUT\n");
@@ -49,13 +51,13 @@ int GetMethodType(const char* method_buf)
 		}
 		case 4:
 		{
-			if('\0' == *post)
+			if('\0' == *_post)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => POST\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => POST\n"); 
 				return _POST;
 			}
-			if('\0' == *head)
+			if('\0' == *_head)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => HEAD\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => HEAD\n"); 
@@ -65,13 +67,13 @@ int GetMethodType(const char* method_buf)
 		} 
 		case 5:
 		{
-			if('\0' == *patch)
+			if('\0' == *_patch)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => PATCH\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => PATCH\n"); 
 				return _PATCH;
 			}
-			if('\0' == *trace)
+			if('\0' == *_trace)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => TRACE\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => TRACE\n"); 
@@ -81,7 +83,7 @@ int GetMethodType(const char* method_buf)
 		}
 		case 6:
 		{
-			if('\0' == *delete)
+			if('\0' == *_delete)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => DELETE\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => DELETE\n"); 
@@ -91,13 +93,13 @@ int GetMethodType(const char* method_buf)
 		}
 		case 7:
 		{
-			if('\0' == *options)
+			if('\0' == *_options)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => OPTIONS\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => OPTIONS\n"); 
 				return _OPTIONS;
 			}
-			if('\0' == *connect)
+			if('\0' == *_connect)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetMethodType() => CONNECT\n");
 				_CallDebug(1,"HttpServer_GetMethodType() => CONNECT\n"); 
@@ -114,44 +116,44 @@ int GetMethodType(const char* method_buf)
 /* 获取请求路径文件格式 */
 int GetFileType(const char* filename_buf)
 {
-	char temp[256] = {'\0'};
-	const size_t filename_buf_len = strlen(filename_buf);
+	const size_t buf_len = strlen(filename_buf);
+	if(0 == buf_len){ return -1; }
+
+	char type[256] = {'\0'};
 	size_t i = 0,index = 0;
 
-	while(i < filename_buf_len)
+	while(i < buf_len)
 	{
 		const char ch = filename_buf[i++];
 		if('/' == ch || '.' == ch){ index = 0; }
-		else{ temp[index++] = ch; }
+		else{ type[index++] = ch; }
 	}
-	temp[index] = '\0';
+	type[index] = '\0';
 
 	if(0 != index)
 	{
-		char file_type[256] = {'\0'};
-		const char* html_ = "HTML";
-		const char* js_ = "JS";
-		const char* css_ = "CSS";
-		const char* png_ = "PNG";
-		size_t i = 0,type_len = 0;
+		const char* _html = "HTML";
+		const char* _js = "JS";
+		const char* _css = "CSS";
+		const char* _png = "PNG";
+		size_t i = 0,type_len = index;
 
-		while(i < index){ file_type[type_len++] = temp[i++]; }
 		for(i = 0;i < type_len;++i)
 		{
-			const char c = toupper(file_type[i]);
-			if('\0' != *html_ && *html_ == c){ ++html_; }
-			if('\0' != *js_ && *js_ == c){ ++js_; }
-			if('\0' != *css_ && *css_ == c){ ++css_; }
-			if('\0' != *png_ && *png_ == c){ ++png_; }
+			const char c = toupper(type[i]);
+			if('\0' != *_html && *_html == c){ ++_html; }
+			if('\0' != *_js && *_js == c){ ++_js; }
+			if('\0' != *_css && *_css == c){ ++_css; }
+			if('\0' != *_png && *_png == c){ ++_png; }
 		}
-		if(4 == type_len && '\0' == *html_)
+		if(4 == type_len && '\0' == *_html)
 		{
 			_LogFileWrite(_LOGPATH,1,"HttpServer_GetFileType() => HTML\n");
 			_CallDebug(1,"HttpServer_GetFileType() => HTML\n"); 
 			return _HTML;
 		}
 
-		if(2 == type_len && '\0' == *js_)
+		if(2 == type_len && '\0' == *_js)
 		{
 			_LogFileWrite(_LOGPATH,1,"HttpServer_GetFileType() => CSS\n");
 			_CallDebug(1,"HttpServer_GetFileType() => CSS\n"); 
@@ -159,14 +161,14 @@ int GetFileType(const char* filename_buf)
 		}
 		if(3 == type_len)
 		{
-			if('\0' == *css_)
+			if('\0' == *_css)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetFileType() => JS\n");
 				_CallDebug(1,"HttpServer_GetFileType() => JS\n"); 
 				return _CSS;
 			}
 
-			if('\0' == *png_)
+			if('\0' == *_png)
 			{
 				_LogFileWrite(_LOGPATH,1,"HttpServer_GetFileType() => PNG\n");
 				_CallDebug(1,"HttpServer_GetFileType() => PNG\n");

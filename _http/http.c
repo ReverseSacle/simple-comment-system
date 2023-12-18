@@ -30,7 +30,7 @@ static void UrlFormat(char* buf,const size_t buf_len)
 static bool ReqContentReceive(int sock_fd,struct ReqContent* req_content)
 {
 	char buf[4096] = {'\0'};
-	size_t buf_size = sizeof(buf);
+	const size_t buf_size = sizeof(buf);
 	size_t buf_len = 0;
 
 	if(0 == (buf_len = TcpStream_StreamParseLine(sock_fd,buf,buf_size)))
