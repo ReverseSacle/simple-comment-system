@@ -1,38 +1,52 @@
-OP=gcc
-AP1=-Wall
-AP2=-g
+CP :=g++
+AP1 :=-Wall
+AP2 :=-Wall -g
+STD :=-std=c++11
+DEBUG :=-D _DEBUG
+# 头文件
+CPPFLAGS := -I/usr/include/mysql \
+			-I/usr/local/include/mysql++
+# 库目录
+LDFLAGS := -L/usr/local/lib \
+			-L/usr/lib64/mysql 
+# 动态库文件
+LDLIBS := -lmysqlpp \
+		-lmysqlclient 
+CPPMYSQL :=$(CPPFLAGS) $(LDFAGS) -lmysqlpp 
 
-MYSQL=$$(mysql_config --cflags --libs)
-MSPATH=-L/usr/lib64/mysql -lmysqlclient 
-LIBPATH=-L. -l_slibs
+all:
 
-DM=-fPIC -shared
+mylibs: ./mylibs.*
+	$(CP) $(AP1) $(STD) ./mylibs.cc 
 
-all: httpserver
+tcp: ./mylibs.* ./_tcp/tcp.* 
+	$(CP) $(AP1) $(STD) ./mylibs.cc ./_tcp/tcp.cc 
 
-#Product
-httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
-	$(OP) -c _clibs.c
-	$(OP) -c database.c 
-	$(OP) -c http.c
-	ar rcs lib_slibs.a _clibs.o database.o http.o
-	rm -rf _clibs.o database.o http.o
-	$(OP) $(AP1) -O2 $(MSPATH) httpserver.c lib_slibs.a -o httpserver 
+database: ./mylibs.* ./_database/db.*
+	$(CP) $(AP1) $(STD) $(CPPMYSQL) ./mylibs.cc ./_database/db.cc
 
-#Static
-#httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
-#	$(OP) -c _clibs.c
-#	$(OP) -c database.c 
-#	$(OP) -c http.c
-#	ar rcs lib_slibs.a _clibs.o database.o http.o
-#	rm -rf _clibs.o database.o http.o
-#	$(OP) $(AP1) $(AP2) $(MSPATH) -pthread httpserver.c lib_slibs.a -o httpserver 
+response: ./mylibs.* ./_tcp/tcp.* ./_database/db.* ./_http/_response.*
+	$(CP) $(AP1) $(STD) $(CPPMYSQL) ./mylibs.cc ./_tcp/tcp.cc \
+	./_database/db.cc ./_http/_response.cc
 
-#Dynamic
-#httpserver: httpserver.c http.h http.c database.h database.c _clibs.h _clibs.c
-#	$(OP) $(DM) $(MYSQL) http.c database.c _clibs.c -o lib_slibs.so
-#	$(OP) $(AP1) $(AP2) $(LIBPATH) -pthread httpserver.c -o httpserver 
-#	export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:/root/httpserver
+http: ./mylibs.* ./_tcp/tcp.* ./_database/db.* ./_http/_response.* ./_http/http.*  
+	$(CP) $(AP1) $(STD) $(CPPMYSQL) ./mylibs.cc ./_tcp/tcp.cc \
+	./_database/db.cc ./_http/_response.cc ./_http/http.cc
+
+httpserver: ./mylibs.* ./_tcp/tcp.* ./_http/_response.* ./_http/http.* \
+			./_database/db.* ./_http/http.* ./httpserver.cc
+	$(CP) $(AP1) $(STD) $(DEBUG) $(CPPMYSQL) ./mylibs.cc ./_tcp/tcp.cc \
+	./_database/db.cc ./_http/_response.cc ./_http/http.cc \
+	./httpserver.cc -o httpserver
+	export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+httptest: 
+	make clean && make httpserver && ./httpserver
 
 clean:
-	rm -rf httpserver *.a *.log *.so
+	rm -rf ./mylibs.h.gch ./_tcp/tcp.h.gch ./_http/http.h.gch \
+	./_http/_response.h.gch ./_database/db.h.gch
+	rm -rf httpserver
+
+openport:
+	firewall-cmd --zone=public --add-port=80/tcp --permanent
