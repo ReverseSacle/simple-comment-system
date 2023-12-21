@@ -38,22 +38,33 @@
 
 **目录结构**
 
+```tex
 httpserver
-- docs
-  - css
-    - comments.css
-  - img
-    - img.png
-  - js
-    - comments.js
-  - index.html
-- _clibs.h
-- _clibs.c
-- database.h
-- database.c
-- http.h
-- http.c
-- httpserver.c
+├── _database
+│   ├── db.cc
+│   └── db.h
+├── docs
+│   ├── css
+│   │   └── comments.css
+│   ├── img
+│   │   └── img.png
+│   ├── index.html
+│   └── js
+│       └── comments.js
+├── _http
+│   ├── http.cc
+│   ├── http.h
+│   ├── _response.cc
+│   └── _response.h
+├── httpserver
+├── httpserver.cc
+├── makefile
+├── mylibs.cc
+├── mylibs.h
+└── _tcp
+    ├── tcp.cc
+    └── tcp.h
+```
 
 其中`httpserver`为根目录，docs目录以及其以内的目录可通过`cd`与`mkdir`Linux命令的配合来创建，倘若通过SFTP传入的文件位置不对，可通过`mv 文件名 目的路径`命令来移动位置。
 
