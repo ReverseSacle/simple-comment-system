@@ -83,7 +83,7 @@ git clone https://github.com/ReverseSacle/simple-comment-system.git
 
 此外，还需修改`comments.js`文件`window.onload`开头的`_host`变量的值，改为`SecureCRT`连接的IP地址。
 
-环境依赖配置完成后，可输入make命令开始编译
+环境依赖配置完成后，可输入make命令开始编译并运行
 
 ```bash
 cd simple-comment-system

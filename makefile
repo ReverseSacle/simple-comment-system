@@ -11,7 +11,7 @@ LDFLAGS := -L/usr/local/lib \
 			-L/usr/lib64/mysql 
 # 动态库文件
 LDLIBS := -lmysqlpp \
-		-lmysqlclient 
+			-lmysqlclient 
 CPPMYSQL :=$(CPPFLAGS) $(LDFAGS) -lmysqlpp 
 
 all:
@@ -40,13 +40,13 @@ httpserver: ./mylibs.* ./_tcp/tcp.* ./_http/_response.* ./_http/http.* \
 	./httpserver.cc -o httpserver
 	export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
-httptest: 
-	make clean && make httpserver && ./httpserver
+openport:
+	firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+httptest:
+	make openport && make clean && make httpserver && ./httpserver
 
 clean:
 	rm -rf ./mylibs.h.gch ./_tcp/tcp.h.gch ./_http/http.h.gch \
 	./_http/_response.h.gch ./_database/db.h.gch
 	rm -rf httpserver
-
-openport:
-	firewall-cmd --zone=public --add-port=80/tcp --permanent
