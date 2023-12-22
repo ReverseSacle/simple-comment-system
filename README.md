@@ -45,6 +45,8 @@
 
 之后，获取源码(Clone地址：`https://github.com/ReverseSacle/simple-comment-system-pre.git`)，通过`SecureCRT`软件连接Linux虚拟机环境，连接之后在顶栏标签处右键选`Connect SFTP Session`来通过SFTP命令向Linux虚拟机环境传入文件。
 
+SFTP可用[FileZilla](https://filezilla-project.org/)代替。
+
 **目录结构**
 
 ```tex
