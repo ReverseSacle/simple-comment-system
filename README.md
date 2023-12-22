@@ -39,14 +39,6 @@
 
 ## 源码使用流程详解
 
-首先，阅览[→Linux(CentOS 7)](https://www.reversesacle.com/computer-science/programming/c-language/network-programming/Linux-basic/)，从**准备条件**部分到**通过客户端连接服务器**部分，以及额外的**客户端(SFTP)命令**部分。
-
-接着，确保Linux虚拟机环境安装了make工具，倘若没有可使用命令 `yum -y install make`
-
-之后，获取源码(Clone地址：`https://github.com/ReverseSacle/simple-comment-system-pre.git`)，通过`SecureCRT`软件连接Linux虚拟机环境，连接之后在顶栏标签处右键选`Connect SFTP Session`来通过SFTP命令向Linux虚拟机环境传入文件。
-
-SFTP可用[FileZilla](https://filezilla-project.org/)代替。
-
 **目录结构**
 
 ```tex
@@ -77,14 +69,26 @@ httpserver
     └── tcp.h
 ```
 
-(**注意**)需预先安装MySQL，详细看[该项目介绍文章第一部分](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)的**Linux服务器处理进程的数据库链接**内容。
-
-此外，还需修改`comments.js`文件`window.onload`开头的`_host`变量的值，改为`SecureCRT`连接的IP地址。
+通过git命令获取源码
 
 ```bash
 git clone https://github.com/ReverseSacle/simple-comment-system.git
+```
+
+(**info**) 阅览[→Linux(CentOS 7)](https://www.reversesacle.com/computer-science/programming/c-language/network-programming/Linux-basic/)，从**准备条件**部分到**通过客户端连接服务器**部分，以及额外的**客户端(SFTP)命令**部分。`SecureCRT`软件连接Linux虚拟机环境，连接之后在顶栏标签处右键选`Connect SFTP Session`，之后可通过SFTP命令向Linux虚拟机环境传输或获取文件。SFTP可用[FileZilla](https://filezilla-project.org/)代替。
+
+确保Linux虚拟机环境安装了make工具，倘若没有可使用安装命令 - `yum -y install make`
+
+使用前需预先安装MySQL，详细看[该项目介绍文章第一部分](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)的**Linux服务器处理进程的数据库链接**内容。
+
+此外，还需修改`comments.js`文件`window.onload`开头的`_host`变量的值，改为`SecureCRT`连接的IP地址。
+
+环境依赖配置完成后，可输入make命令开始编译
+
+```bash
 cd simple-comment-system
 make httptest
+## 详细操作可查看makefile
 ```
 
 可通过`ctrl c`中断，之后直接执行`./httpserver`即可启动服务端进程，再在浏览器中的输入栏输入`http://(SecureCRT连接的IP地址)/index.html`，回车即可看到评论系统的前端界面。
