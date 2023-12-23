@@ -1,6 +1,6 @@
 #pragma once
-#include<mysql++/mysql++.h>
 #include"../mylibs.h"
+#include<mysql++/mysql++.h>
 
 #define _HOST "127.0.0.1"
 #define _USER "root"
@@ -27,5 +27,3 @@ public:
 	bool TableInsert(Record* record);// 表记录插入
 	bool GetTableRecord(std::vector<Record>& buf);// 表记录读取
 };
-
-

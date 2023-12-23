@@ -16,9 +16,9 @@ async function _GetRequest(host,url)
 {
 	const _URL = "http://" + host + url;
 	var response = await fetch(_URL);
-    
+
 	if(!response.ok){ return [false,""]; }
-    
+
 	return [true,await response.text()];
 }
 
@@ -182,7 +182,7 @@ function commentPreShow(data,labels)
 }
 
 window.onload = async function(){
-	const _host = "192.168.80.134";
+	const _host = "192.168.80.140";
 	var commentBlock = document.getElementById("comment-block");/* class="comment-block" */
 
 	var inputBlock = commentBlock.firstElementChild;/* class="input-block" */

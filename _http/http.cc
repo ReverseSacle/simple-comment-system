@@ -21,6 +21,10 @@ std::string HttpServer::UrlFormat(std::string& url_buf)
 	}
 	
 	// log...
+	MyLibs::CallLogInfo(
+		"HttpServer::UrlFormat() => Format URL: ",
+		url
+	);
 	MyLibs::CallDebug(
 		"HttpServer::UrlFormat() => Format URL: ",
 		url
@@ -35,6 +39,9 @@ bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 	if(false == TcpStream::StreamParse_Line(sock_fd,buf))
 	{
 		// log...
+		MyLibs::CallLogError(
+			"HttpServer::ReqContentReceive() => TcpStream::StreamParse_Line() fail"
+		);
 		MyLibs::CallDebug(
 			"HttpServer::ReqContentReceive() => TcpStream::StreamParse_Line() fail"
 		);
@@ -52,6 +59,9 @@ bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 	}
 
 	// log...
+	MyLibs::CallLogInfo(
+		"HttpServer::ReqContentReceive() => \nRequest Header:"
+	);
 	MyLibs::CallDebug(
 		"HttpServer::ReqContentReceive() => \nRequest Header:"
 	);
@@ -60,6 +70,7 @@ bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 	do
 	{
 		// log...
+		MyLibs::CallLogInfo(buf);
 		MyLibs::CallDebug(buf);
 
 		buf.clear();
@@ -85,6 +96,9 @@ bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 		if(0 == buf_len)
 		{
 			// log...
+			MyLibs::CallLogInfo(
+				"HttpServer::ReqContentReceive() => Receive Nothing body"
+			);
 			MyLibs::CallDebug(
 				"HttpServer::ReqContentReceive() => Receive Nothing body"
 			);
@@ -99,7 +113,10 @@ bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 		}
 	}
 	// log...
-	MyLibs::CallDebug(
+	MyLibs::CallLogInfo(
+		"HttpServer::ReqContentReceive() => Succeed"
+	);
+		MyLibs::CallDebug(
 		"HttpServer::ReqContentReceive() => Succeed"
 	);
 	return true;	
@@ -111,6 +128,9 @@ void HttpServer::BodyTackle(const std::string& body_buf,Record* record)
 	if(0 == n)
 	{ 
 		// log...
+		MyLibs::CallLogInfo(
+			"HttpServer::BodyTackle() => Receive Nothing Body"
+		);
 		MyLibs::CallDebug(
 			"HttpServer::BodyTackle() => Receive Nothing Body"
 		);
@@ -142,6 +162,9 @@ void HttpServer::BodyTackle(const std::string& body_buf,Record* record)
 	record->tablename = _TABLENAME;
 
 	// log...
+	MyLibs::CallLogInfo(
+		"HttpServer::BodyTackle() => Succeed"
+	);
 	MyLibs::CallDebug(
 		"HttpServer::BodyTackle() => Succeed"
 	);
@@ -160,10 +183,16 @@ void HttpServer::GetMethod(int sock_fd,const std::string& url_buf)
 	}
 
 	// log...
+	MyLibs::CallLogInfo(
+		"HttpServer::GetMethod() => Request URL: ",
+		url
+	);
 	MyLibs::CallDebug(
 		"HttpServer::GetMethod() => Request URL: ",
 		url
 	);
+	// log...
+	MyLibs::CallLogInfo("HttpServer::GetMethod() => Response...");
 	MyLibs::CallDebug("HttpServer::GetMethod() => Response...");
 
 	TcpResponse::ResponseSelector(sock_fd,UrlFormat(url)); 
@@ -176,6 +205,13 @@ void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 	BodyTackle(body_buf,&record);
 
 	// log...
+	MyLibs::CallLogInfo(
+		"HttpServer::PostMethod() => record:\n"
+		"nickname: " + record.nickname + "\n",
+		"email: " + record.email + "\n",
+		"content: " + record.content + "\n",
+		"createat: " + record.createat
+	);
 	MyLibs::CallDebug(
 		"HttpServer::PostMethod() => record:\n"
 		"nickname: " + record.nickname + "\n",
@@ -188,6 +224,7 @@ void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 	database.TableInsert(&record);
 
 	// log...
+	MyLibs::CallLogInfo("HttpServer::PostMethod() => Response...");
 	MyLibs::CallDebug("HttpServer::PostMethod() => Response...");
 
 	TcpResponse::ResponseSelector(sock_fd,"api");
@@ -198,6 +235,9 @@ void HttpServer::HttpAccept(int sock_fd)
 	if(-1 == sock_fd)
 	{
 		// log...
+		MyLibs::CallLogError(
+			"HttpServer::Accept() => None apply socket"
+		);	
 		MyLibs::CallDebug(
 			"HttpServer::Accept() => None apply socket"
 		);	
@@ -218,6 +258,11 @@ void HttpServer::HttpAccept(int sock_fd)
 		{
 			/* 不支持的请求方法 */
 			// log...
+			MyLibs::CallLogInfo(
+				"HttpServer::Accept() => Not support for current ",
+				req_content.req_method,
+				" request method"
+			);
 			MyLibs::CallDebug(
 				"HttpServer::Accept() => Not support for current ",
 				req_content.req_method,

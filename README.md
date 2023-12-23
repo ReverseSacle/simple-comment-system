@@ -1,5 +1,7 @@
-# 网站留言评论系统-初稿(simple-comment-system-pre)
+# 网站留言评论系统(simple-comment-system-pre)
+
 ## 概述
+
 此项目为从`计算机入门水平`升阶为`计算机进阶-前期水平`的升阶项目的**初稿**部分，以简单、简洁性和完整性为主，除了必要的数据库API外，没有额外的外部插件库，全是由个人手动实现的底层源码。
 
 此处的C语言指C，不包含C++，使用的C标准在C99之下(不包括C99)。<br/>
@@ -21,9 +23,9 @@
 
 **源码解析及设计思路** - [网站留言评论系统-初稿的(思路与教程)文章](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)
 
-**分支说明**
+## 分支说明
 
-- `main` - 主线分支，由`C++`编写，通过使用外部库及API来对功能进行优化，并作为主线来更新功能
+- `main` - 主线分支，由`C++`编写，通过使用外部库及API来对功能进行优化，并作为主线来更新其他功能
 - `original` - 最初的初稿成品，由C语言编写
 - `original-cpp` - 后续的初稿成品，由`C++`编写
 
@@ -86,9 +88,20 @@ git clone https://github.com/ReverseSacle/simple-comment-system.git
 环境依赖配置完成后，可输入make命令开始编译并运行
 
 ```bash
+# 配置库连接位置
+vi /etc/ld.so.conf
+## 新的一行添加 /usr/local/lib
+## 输入 :x
+## 退出后输入命令 ldconfig
+
 cd simple-comment-system
 make httptest
 ## 详细操作可查看makefile
 ```
 
 可通过`ctrl c`中断，之后直接执行`./httpserver`即可启动服务端进程，再在浏览器中的输入栏输入`http://(SecureCRT连接的IP地址)/index.html`，回车即可看到评论系统的前端界面。
+
+## 依赖库
+
+- `spdlog` - 用于记录日志
+- `mysql++` - 用于mysql数据库的相关操作

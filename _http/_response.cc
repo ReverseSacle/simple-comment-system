@@ -36,6 +36,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_get)
 			{
 				// log..
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => GET"
+				);
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => GET"
 				);
@@ -44,6 +47,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_put)
 			{
 				// log..
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => PUT"
+				);
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => PUT"
 				);
@@ -56,6 +62,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_post)
 			{
 				// log..
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => POST"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => POST"
 				); 
@@ -64,6 +73,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_head)
 			{
 				// log..
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => HEAD"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => HEAD"
 				); 
@@ -76,6 +88,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_patch)
 			{
 				// log...
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => PATCH"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => PATCH"
 				); 
@@ -84,6 +99,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_trace)
 			{
 				// log...
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => TRACE"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => TRACE"
 				); 
@@ -96,6 +114,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_delete)
 			{
 				// log...
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => DELETE"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => DELETE"
 				); 
@@ -108,6 +129,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_options)
 			{
 				// log...
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => OPTIONS"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => OPTIONS"
 				); 
@@ -116,6 +140,9 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 			if('\0' == *_connect)
 			{
 				// log...
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetMethodType() => CONNECT"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => CONNECT"
 				); 
@@ -125,6 +152,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 		}
 	}
 	// log...
+	MyLibs::CallLogInfo("TcpResponse::GetMethodType() => UNKNOW");
 	MyLibs::CallDebug("TcpResponse::GetMethodType() => UNKNOW");
 	return -1;
 }
@@ -163,6 +191,9 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 		if(4 == type_len && '\0' == *_html)
 		{
 			// log...
+			MyLibs::CallLogInfo(
+				"TcpResponse::GetFileType() => HTML"
+			); 
 			MyLibs::CallDebug(
 				"TcpResponse::GetFileType() => HTML"
 			); 
@@ -172,6 +203,9 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 		if(2 == type_len && '\0' == *_js)
 		{
 			// log...
+			MyLibs::CallLogInfo(
+				"TcpResponse::GetFileType() => CSS"
+			); 
 			MyLibs::CallDebug(
 				"TcpResponse::GetFileType() => CSS"
 			); 
@@ -183,6 +217,9 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 			if('\0' == *_css)
 			{
 				// log...
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetFileType() => JS"
+				); 
 				MyLibs::CallDebug(
 					"TcpResponse::GetFileType() => JS"
 				); 
@@ -192,6 +229,9 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 			if('\0' == *_png)
 			{
 				// log...
+				MyLibs::CallLogInfo(
+					"TcpResponse::GetFileType() => PNG"
+				);
 				MyLibs::CallDebug(
 					"TcpResponse::GetFileType() => PNG"
 				);
@@ -200,6 +240,9 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 		}
 	}
 	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::GetFileType() => UNKNOW"
+	);
 	MyLibs::CallDebug(
 		"TcpResponse::GetFileType() => UNKNOW"
 	);
@@ -224,6 +267,7 @@ int TcpResponse::GetPathType(const std::string& path_buf)
 	if(9 == buf_len && '\0' == *db)
 	{
 		// log...
+		MyLibs::CallLogInfo("TcpResponse::GetPathType() => DATABASE");
 		MyLibs::CallDebug("TcpResponse::GetPathType() => DATABASE");
 		return _DATABASE;
 	}
@@ -231,6 +275,9 @@ int TcpResponse::GetPathType(const std::string& path_buf)
 	if(3 == buf_len && '\0' == *api)
 	{
 		// log...
+		MyLibs::CallLogInfo(
+			"TcpResponse::GetPathType() => API"
+		);
 		MyLibs::CallDebug(
 			"TcpResponse::GetPathType() => API"
 		);
@@ -238,6 +285,9 @@ int TcpResponse::GetPathType(const std::string& path_buf)
 	}
 
 	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::GetPathType() => NORMAL"
+	);
 	MyLibs::CallDebug(
 		"TcpResponse::GetPathType() => NORMAL"
 	);
@@ -255,11 +305,25 @@ void TcpResponse::Response400(int sock_fd)
 	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
 	{
 		// log...
+		MyLibs::CallLogError(
+			"TcpResponse::Response400() => send() fail.\nreason: ",
+			strerror(errno)
+		);
 		MyLibs::CallDebug(
 			"TcpResponse::Response400() => send() fail.\nreason: ",
 			strerror(errno)
 		);
+		return;
 	}
+	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::Response400() => Succeed\nResponse Header:\n",
+		buf
+	);
+	MyLibs::CallDebug(
+		"TcpResponse::Response400() => Succeed\nResponse Header:\n",
+		buf
+	);
 }
 
 void TcpResponse::Response404(int sock_fd)
@@ -273,11 +337,25 @@ void TcpResponse::Response404(int sock_fd)
 	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
 	{
 		// log...
+		MyLibs::CallLogError(
+			"TcpResponse::Response404() => send() fail.\nreason: ",
+			strerror(errno)
+		);
 		MyLibs::CallDebug(
 			"TcpResponse::Response404() => send() fail.\nreason: ",
 			strerror(errno)
 		);
+		return;
 	}
+	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::Response404() => Succeed\nResponse Header:\n",
+		buf
+	);
+	MyLibs::CallDebug(
+		"TcpResponse::Response404() => Succeed\nResponse Header:\n",
+		buf 
+	);
 }
 
 void TcpResponse::Response200_NF(int sock_fd)
@@ -293,19 +371,25 @@ void TcpResponse::Response200_NF(int sock_fd)
 	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
 	{
 		// log....
+		MyLibs::CallLogError(
+			"TcpResponse::Response200_NF() => send() fail.\nreason: ",
+			strerror(errno)
+		);
 		MyLibs::CallDebug(
 			"TcpResponse::Response200_NF() => send() fail.\nreason: ",
 			strerror(errno)
 		);
+		return;
 	}
-	else 
-	{ 
-		// log...
-		MyLibs::CallDebug(
-			"TcpResponse::Response200_NF() => \nResponse Header:\n",
-			buf
-		); 
-	}
+	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::Response200_NF() => Succeed\nResponse Header:\n",
+		buf
+	); 
+	MyLibs::CallDebug(
+		"TcpResponse::Response200_NF() => Succeed\nResponse Header:\n",
+		buf
+	); 
 }
 
 void TcpResponse::Response200_DB(int sock_fd)
@@ -331,30 +415,45 @@ void TcpResponse::Response200_DB(int sock_fd)
 	buf += std::to_string(bodyLen);
 	buf += "\r\n\r\n";
 	
-	// log...
-	MyLibs::CallDebug(
-		"TcpResponse::Response200_DB() => \nResponse Header:\n",
-		buf
-	);
-	
 	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
 	{
 		// log...
+		MyLibs::CallLogError(
+			"TcpResponse::Response200_DB() => send() fail.\nreason: ",
+			strerror(errno)
+		);
 		MyLibs::CallDebug(
 			"TcpResponse::Response200_DB() => send() fail.\nreason: ",
 			strerror(errno)
 		);
+		return;
 	}
-	else if(0 != bodyLen)
+
+	if(0 != bodyLen)
 	{
 		if(send(sock_fd,&body[0],bodyLen,0) <= 0)
-		{	
+		{
+			// log...	
+			MyLibs::CallLogError(
+				"TcpResponse::Response200_DB() => body send() fail.\nreason: ",
+				strerror(errno)
+			);
 			MyLibs::CallDebug(
 				"TcpResponse::Response200_DB() => body send() fail.\nreason: ",
 				strerror(errno)
 			);
+			return;
 		}
 	}
+	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::Response200_DB() => Succeed\nResponse Header:\n",
+		buf
+	);
+	MyLibs::CallDebug(
+		"TcpResponse::Response200_DB() => Succeed\nResponse Header:\n",
+		buf
+	);
 }
 
 void TcpResponse::Response200(int sock_fd,const std::string& path,const off_t f_size)
@@ -378,58 +477,79 @@ void TcpResponse::Response200(int sock_fd,const std::string& path,const off_t f_
 	buf += std::to_string(f_size);
 	buf += "\r\n\r\n";
 
-	// log...
-	MyLibs::CallDebug(
-		"TcpResponse::Response200() => \nResponse Header:\n",
-		buf
-	);
 	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
 	{
 		// log...
+		MyLibs::CallLogError(
+			"TcpResponse::Response200() => send() fail.\nreason: ",
+			strerror(errno)
+		);
 		MyLibs::CallDebug(
 			"TcpResponse::Response200() => send() fail.\nreason: ",
 			strerror(errno)
 		);
+		return;
+	}
+	std::ifstream resource(path,std::ios::binary);
+
+	if(!resource.is_open())
+	{
+		// log...
+		MyLibs::CallLogError(
+			"HttpServer::Response200() => file open fail"
+		);
+		MyLibs::CallDebug(
+			"HttpServer::Response200() => file open fail"
+		);
+		return;
+	}
+
+	int c = 0;
+	while(EOF != (c = resource.get()))
+	{
+		if(send(sock_fd,&c,1,0) <= 0)
+		{
+			// log...
+			MyLibs::CallLogError(
+				"HttpServer::Response200() => file read fail"
+			);
+			MyLibs::CallDebug(
+				"HttpServer::Response200() => file read fail"
+			);
+			return;
+		}
+	}
+		
+	if(resource.eof())
+	{
+		// log...
+		MyLibs::CallLogInfo(
+			"HttpServer::Response200() => End of reading file"
+		);
+		MyLibs::CallDebug(
+			"HttpServer::Response200() => End of reading file"
+		);
 	}
 	else
 	{
-		std::ifstream resource(path,std::ios::binary);
-
-		if(!resource.is_open())
-		{
-			// log...
-			MyLibs::CallDebug(
-				"HttpServer::Response200() => file open fail"
-			);
-		}
-
-		int c = 0;
-		while(EOF != (c = resource.get()))
-		{
-			if(send(sock_fd,&c,1,0) <= 0)
-			{
-				// log...
-				MyLibs::CallDebug(
-					"HttpServer::Response200() => file read fail"
-				);
-			}
-		}
-		
-		if(resource.eof())
-		{
-			// log...
-			MyLibs::CallDebug(
-				"HttpServer::Response200() => End of reading file"
-			);
-		}
-		else
-		{
-			// log...
-			MyLibs::CallDebug(
-				"HttpServer::Response200() => I/O error when reading"
-			);
-		}
+		// log...
+		MyLibs::CallLogError(
+			"HttpServer::Response200() => I/O error when reading"
+		);
+		MyLibs::CallDebug(
+			"HttpServer::Response200() => I/O error when reading"
+		);
+		return;
 	}
+	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::Response200() => Succeed\nResponse Header:\n",
+		buf
+	);
+	MyLibs::CallDebug(
+		"TcpResponse::Response200() => Succeed\nResponse Header:\n",
+		buf
+	);
 }
 
 void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
@@ -441,17 +561,22 @@ void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
 		default: 
 		{
 			std::string buf;
+			struct stat st;
+
 			buf += "./";
 			buf += _ROOTDIR;
 			buf += url_buf;
 
 			// log...
+			MyLibs::CallLogInfo(
+				"TcpResponse::ResponseSelector() => Index_Path: ",
+				buf
+			);
 			MyLibs::CallDebug(
 				"TcpResponse::ResponseSelector() => Index_Path: ",
 				buf
 			);
 
-			struct stat st;
 			if(-1 == stat(&buf[0],&st)){ Response404(sock_fd); }
 			else{ Response200(sock_fd,buf,st.st_size); }
 		}

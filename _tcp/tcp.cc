@@ -3,8 +3,8 @@
 TcpStream::TcpStream()
 {
 	memset(&sock_addr,0,sock_addr_size);
-	sock_addr.sin_family = _IPUSER;
-	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	sock_addr.sin_family = AF_INET;// 接入的地址类型
+	sock_addr.sin_addr.s_addr = htonl(_IPUSER);// 允许接入的IP用户
 }
 
 TcpStream::~TcpStream()
@@ -22,6 +22,7 @@ bool TcpStream::Construct(const size_t port)
 	if(-1 == (tcp_sock_fd = socket(AF_INET,SOCK_STREAM,0)))
 	{
 		// log...
+		MyLibs::CallLogError("TcpStream::Construct() => tcp_sock_fd fail");
 		MyLibs::CallDebug("TcpStream::Construct() => tcp_sock_fd fail");
 		return false;
 	}
@@ -34,11 +35,13 @@ bool TcpStream::Construct(const size_t port)
 	if(-1 == bind(tcp_sock_fd,(struct sockaddr*)(&sock_addr),sock_addr_size))
 	{
 		// log...
+		MyLibs::CallLogError("TcpStream::Construct() => bind fail");
 		MyLibs::CallDebug("TcpStream::Construct() => bind fail");
 		close(tcp_sock_fd);
 		return false;
 	}
 	// log...
+	MyLibs::CallLogInfo("TcpStream::Construct() => Succeed");
 	MyLibs::CallDebug("TcpStream::Construct() => Succeed");
 	return true;
 }
@@ -50,11 +53,13 @@ bool TcpStream::ToListen()
 	if(-1 == listen(tcp_sock_fd,5))
 	{
 		// log...
+		MyLibs::CallLogError("TcpStream::ToListen() => listen() fail");
 		MyLibs::CallDebug("TcpStream::ToListen() => listen() fail");
 		close(tcp_sock_fd);
 		return false;
 	}
 	// log...
+	MyLibs::CallLogInfo("TcpStream::ToListen() => Succeed");
 	MyLibs::CallDebug("TcpStream::ToListen() => Succeed");
 	return true;
 }
@@ -78,6 +83,7 @@ bool TcpStream::StreamParse_Line(int sock_fd,std::string& buffer)
 			if(-1 == len)
 			{
 				// log...
+				MyLibs::CallLogError("TcpStream::StreamParse_Line() => recv() fail");
 				MyLibs::CallDebug("TcpStream::StreamParse_Line() => recv() fail");
 				buffer.clear();
 				return false;
@@ -85,6 +91,7 @@ bool TcpStream::StreamParse_Line(int sock_fd,std::string& buffer)
 			else
 			{
 				// log...
+				MyLibs::CallLogInfo("TcpStream::StreamParse_Line() => end of recv()");
 				MyLibs::CallDebug("TcpStream::StreamParse_Line() => end of recv()");
 				break;
 			}

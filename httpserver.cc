@@ -1,7 +1,9 @@
+#include<signal.h>
 #include"./_http/http.h"
 #include"./_tcp/tcp.h"
-#include<signal.h>
+#include"./mylibs.h"
 
+bool log_option = false;
 TcpStream server_tcp;
 
 void ExitAction(int sig)
@@ -9,7 +11,7 @@ void ExitAction(int sig)
 	exit(0);
 }
 
-int main()
+int main(int argc,char* argv[])
 {
 	// 屏蔽所有Linux信号
 	for(int i = 0;i < 100;++i){ signal(i,SIG_IGN); }
@@ -28,10 +30,12 @@ int main()
 		struct sockaddr_in sock_addr;
 
 		// log...
-		std::cout << "main() => Waiting server connect..." << std::endl;
+		MyLibs::CallLogInfo("main() => Waiting server connect..."); 
+		MyLibs::CallDebug("main() => Waiting server connect..."); 
 		accept_fd = accept(sock_fd,(struct sockaddr*)&sock_addr,(socklen_t*)&sock_addr_len);
 		// log...
-		std::cout << "main() => Server connected" << std::endl;
+		MyLibs::CallLogInfo("main() => Server connected");
+		MyLibs::CallDebug("main() => Server connected");
 
 		HttpServer::HttpAccept(accept_fd);
 		close(accept_fd);

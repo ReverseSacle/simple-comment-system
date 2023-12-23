@@ -5,12 +5,18 @@ bool DataBase::Connect()
 	if(false == conn.connect(_DBNAME,_HOST,_USER,_PASSWORD))
 	{
 		// log...
+		MyLibs::CallLogInfo(
+			"DataBase::Connect() => conn.connect() fail"
+		);
 		MyLibs::CallDebug(
 			"DataBase::Connect() => conn.connect() fail"
 		);
 		return false;
 	}
 	// log...
+	MyLibs::CallLogInfo(
+		"DataBase::Connect() => Succeed"
+	);
 	MyLibs::CallDebug(
 		"DataBase::Connect() => Succeed"
 	);
@@ -36,24 +42,40 @@ bool DataBase::TableInsert(Record* record)
 		_sql += ");"; 
 
 		// log...
-		MyLibs::CallDebug(
-			"DataBase::TableInsert() => query\n",
-			"INSERT INTO " + record->tablename + \
+		MyLibs::CallLogInfo(
+			"DataBase::TableInsert() => query\n", 
+			"INSERT INTO " + record->tablename + 
 			"(NickName,Email,Content,CreateAt)\nVALUES('",
 			record->nickname + "','" + record->email + "','",
 			record->content + "','" + record->createat + "');"
 		);
+		MyLibs::CallDebug(
+			"DataBase::TableInsert() => query\n", 
+			"INSERT INTO " + record->tablename + 
+			"(NickName,Email,Content,CreateAt)\nVALUES('" + 
+			record->nickname + "','" + record->email + "','" + 
+			record->content + "','" + record->createat + "');"
+		);
+
 		query << _sql << std::endl;
 		query.execute();
 	} catch(const mysqlpp::Exception& er) {
 		// log...
+		MyLibs::CallLogError(
+			"DataBase::TableInsert() => query fail.\nreason: ",
+			er.what()
+		);
 		MyLibs::CallDebug(
 			"DataBase::TableInsert() => query fail.\nreason: ",
 			er.what()
 		);
 		return false;
 	}
+
 	// log...
+	MyLibs::CallLogInfo(
+		"DataBase::TableInsert() => Succeed"
+	);
 	MyLibs::CallDebug(
 		"DataBase::TableInsert() => Succeed"
 	);
@@ -64,17 +86,23 @@ bool DataBase::GetTableRecord(std::vector<Record>& buf)
 {
 	mysqlpp::Query query = conn.query();
 	std::string _sql = "SELECT * FROM " + mysqlpp::quote;
+
 	_sql += _TABLENAME;
 	_sql += ";";
 
 	// log...
-	MyLibs::CallDebug(
-		"DataBase::TableInsert() => query\n",
-		"SELECT * FROM ",
+	MyLibs::CallLogInfo(
+		"DataBase::TableInsert() => query\nSELECT * FROM ", 
 		_TABLENAME,
 		";"
 	);
-query << _sql << std::endl;
+	MyLibs::CallDebug(
+		"DataBase::TableInsert() => query\nSELECT * FROM ", 
+		_TABLENAME,
+		";"
+	);
+
+	query << _sql << std::endl;
 	if(mysqlpp::StoreQueryResult res = query.store())
 	{
 		for(auto& row: res)
@@ -91,13 +119,21 @@ query << _sql << std::endl;
 	else
 	{
 		// log...
+		MyLibs::CallLogError(
+			"DataBase::GetTableRecord() => query.store() fail.\nreason: ",
+			query.error()
+		);
 		MyLibs::CallDebug(
 			"DataBase::GetTableRecord() => query.store() fail.\nreason: ",
 			query.error()
 		);
 		return false;
 	}
+
 	// log...
+	MyLibs::CallLogInfo(
+		"DataBase::GetTableRecord() => Succeed"
+	);
 	MyLibs::CallDebug(
 		"DataBase::GetTableRecord() => Succeed"
 	);
