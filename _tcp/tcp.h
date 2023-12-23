@@ -6,7 +6,7 @@
 #include<arpa/inet.h>
 #include"../mylibs.h"
 
-#define _IPUSER AF_INET
+#define _IPUSER INADDR_ANY
 
 int TcpStream_Construct(const usize_t port);
 bool TcpStream_ToListen(int sock_fd);

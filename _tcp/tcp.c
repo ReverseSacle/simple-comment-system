@@ -19,7 +19,7 @@ int TcpStream_Construct(const usize_t port)
 
 	memset(&sock_addr,0,sock_addr_size);
 	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	sock_addr.sin_addr.s_addr = htonl(_IPUSER);
 	sock_addr.sin_port = htons(port);
 	
 	/* 初始化通信端口 */
