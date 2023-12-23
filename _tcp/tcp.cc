@@ -3,8 +3,8 @@
 TcpStream::TcpStream()
 {
 	memset(&sock_addr,0,sock_addr_size);
-	sock_addr.sin_family = _IPUSER;
-	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	sock_addr.sin_family = AF_INET;
+	sock_addr.sin_addr.s_addr = htonl(_IPUSER);
 }
 
 TcpStream::~TcpStream()

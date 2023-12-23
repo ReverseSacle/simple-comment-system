@@ -6,7 +6,7 @@
 #include"../mylibs.h"
 
 // 允许所有IP连接
-#define _IPUSER AF_INET
+#define _IPUSER INADDR_ANY
 
 class TcpStream{
 private:
