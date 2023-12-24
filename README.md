@@ -103,5 +103,10 @@ make httptest
 
 ## 依赖库
 
-- `spdlog` - 用于记录日志
+- [spdlog]() - 用于记录日志
 - `mysql++` - 用于mysql数据库的相关操作
+
+## Record
+
+- 使用了`gabime/spdlog`第三方库来配置日志功能
+- 更换不可更改配置的运行方法，采用运行时动态解析JSON文件的方式来获取配置，使用了`nlohmann/json`第三库来解析JSON配置文件

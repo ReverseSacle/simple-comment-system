@@ -564,7 +564,7 @@ void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
 			struct stat st;
 
 			buf += "./";
-			buf += _ROOTDIR;
+			buf += MyLibs::GetRootDir();
 			buf += url_buf;
 
 			// log...

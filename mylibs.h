@@ -6,21 +6,25 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<fstream>
 
 #include<spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
+#include<spdlog/sinks/basic_file_sink.h>
+#include"./_config/json.hpp"
 
-#define _LOGFILENAME "httpserver_log.log"
-
-extern bool log_option;
+#define _LOGFILEPATH "./httpserver_log.log"
+#define _CONFIGFILEPATH "./_config/_config.json"
 
 class MyLibs
 {
 private:
 	MyLibs();
 	std::shared_ptr<spdlog::logger> file_logger;
+	bool log_option;
+	std::string root_dir;
 public:
-    static MyLibs& GetLogger();// 获取logger
+    static MyLibs& GetMyself();// 获取唯一MyLibs对象
+	static std::string GetRootDir();
 	// CallDebug..............
     static void CallDebug(const std::string& str1) noexcept;
     static void CallDebug(const std::string& str1,const std::string& str2) noexcept;

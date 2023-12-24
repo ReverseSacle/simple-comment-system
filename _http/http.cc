@@ -116,7 +116,7 @@ bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 	MyLibs::CallLogInfo(
 		"HttpServer::ReqContentReceive() => Succeed"
 	);
-		MyLibs::CallDebug(
+	MyLibs::CallDebug(
 		"HttpServer::ReqContentReceive() => Succeed"
 	);
 	return true;	

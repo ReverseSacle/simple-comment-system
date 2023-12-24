@@ -16,9 +16,9 @@ async function _GetRequest(host,url)
 {
 	const _URL = "http://" + host + url;
 	var response = await fetch(_URL);
-
+    
 	if(!response.ok){ return [false,""]; }
-
+    
 	return [true,await response.text()];
 }
 

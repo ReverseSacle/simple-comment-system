@@ -1,11 +1,9 @@
 #pragma once
-#include<fstream>
 #include<sys/stat.h>
 #include"../mylibs.h"
 #include"../_database/db.h"
 #include"../_tcp/tcp.h"
 
-#define _ROOTDIR "docs"
 #define _HTTPVERSION "1.0"
 
 // HTTP请求方法
