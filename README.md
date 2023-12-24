@@ -27,7 +27,7 @@
 
 - `main` - 主线分支，由`C++`编写，通过使用外部库及API来对功能进行优化，并作为主线来更新其他功能
 - `original` - 最初的初稿成品，由C语言编写
-- `original-cpp` - 后续的初稿成品，由`C++`编写
+- `original-cpp` - 最初的初稿成品，由`C++`编写
 
 ## 初稿涉及的计算机知识范围
 
@@ -105,8 +105,10 @@ make httptest
 
 ## 依赖库
 
-- [spdlog]() - 用于记录日志
-- `mysql++` - 用于mysql数据库的相关操作
+- [mysql++](https://tangentsoft.com/mysqlpp/wiki?name=MySQL%2B%2B&p&nsm) - 用于mysql数据库的相关操作
+
+- [gabime/spdlog](https://github.com/gabime/spdlog) - 用于记录日志
+- [nlohmann/json](https://github.com/nlohmann/json) - 用于json文件的解析
 
 ## Record
 
