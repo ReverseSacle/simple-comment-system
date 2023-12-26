@@ -3,11 +3,9 @@
 #include"./_tcp/tcp.h"
 #include"./mylibs.h"
 
-bool log_option = false;
 TcpStream server_tcp;
 
-void ExitAction(int sig)
-{	
+void ExitAction(int sig){	
 	exit(0);
 }
 

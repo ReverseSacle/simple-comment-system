@@ -8,8 +8,7 @@ async function _PostRequest(host,url,data)
 		},
 		body: data,
 	});
-	if(!response.ok){ return false; }
-	return true;
+	return response.ok;
 }
 
 async function _GetRequest(host,url)
@@ -27,9 +26,11 @@ function textareaBeautify(textsLable,cols){
 	var texts = (textsLable.value).replace(/\r|\n/g,"");
 	var textLength = texts.length;
 
-	for(var i = 0;i < textLength;++i){
-		if(0 != cache.length && 0 === cache.length % cols)
+	for(var i = 0;i < textLength;++i)
+	{
+		if(0 != cache.length && 0 === cache.length % cols){
 			cache += "<br/>";
+		}
 		cache += texts[i];
 	};
 	return cache;
@@ -114,20 +115,24 @@ async function buttonClick(host,labels)
 	var texts = inputArea.getElementsByTagName("textarea")[0];
 
 	var nickNameValue = nickName.value;
-	if(0 != (nickNameValue.length))
+	if(0 != nickNameValue.length)
 	{
 		/* current time */
 		var textsContent = textareaBeautify(texts,texts.cols);
 		var curTime = Date.now();
 		var data = nickNameValue + ":" + email.value + ":" + textsContent + ":" + curTime; 
 
-		if(true ==  await _PostRequest(host,"/api",data))
+		if(true == await _PostRequest(host,"/api",data))
 		{
 			var userBlock = document.createElement("li");
 			var commentListFirstChild = commentList.firstChild;
 			var newLabels = [commentContainer,commentBlock,userBlock,commentList];
 
-			contentAppend(newLabels,nickNameValue,textsContent,curTime);
+			contentAppend(
+				newLabels,
+				nickNameValue,
+				textsContent,curTime,
+			);
 			if(null == commentListFirstChild)
 			{ 
 				commentList.appendChild(userBlock); 
@@ -158,12 +163,16 @@ function commentPreShow(data,labels)
 		var textsContent = "";
 		var createat = "";
 		var j = 0;
-		while(j < sub.length && ':' != sub[j])
+
+		while(j < sub.length && ':' != sub[j]){
 			nickName += sub[j++];
-		for(++j;j < sub.length && ':' != sub[j];++j)
+		}
+		for(++j;j < sub.length && ':' != sub[j];++j){
 			email += sub[j];
-		for(++j;j < sub.length && ':' != sub[j];++j)
+		}
+		for(++j;j < sub.length && ':' != sub[j];++j){
 			textsContent += sub[j];
+		}
 		for(++j;j < sub.length;++j){ createat += sub[j]; }
 
 /*	console.log(nickName + ":" + email + ":" + textsContent + ":" + createat + "\n"); */
@@ -186,11 +195,15 @@ window.onload = async function(){
 	var commentBlock = document.getElementById("comment-block");/* class="comment-block" */
 
 	var inputBlock = commentBlock.firstElementChild;/* class="input-block" */
-	/* input-block */
-	var inputArea = inputBlock.firstElementChild;/* class="input-area" */
-	var buttonArea = inputArea.lastElementChild;/* class="text-block" */
-	var commitButton = buttonArea.getElementsByTagName("button")[0];/* class="commit" */
-	/***************/
+	/*** input-block ***/
+	/******************************/
+	/* class="input-area" */
+	var inputArea = inputBlock.firstElementChild;
+	/* class="text-block" */
+	var buttonArea = inputArea.lastElementChild;
+	/* class="commit" */
+	var commitButton = buttonArea.getElementsByTagName("button")[0];
+	/******************************/
 	var commentContainer = inputBlock.nextElementSibling;/* class="comment-container" */
 
 	var responseData = await _GetRequest(_host,"/database");
@@ -201,7 +214,11 @@ window.onload = async function(){
 	commentContainer.appendChild(commentList);
 	commentPreShow(responseData[1],[commentContainer,commentBlock,commentList]);
 
-	commitButton.addEventListener("click",function(){
-		buttonClick(_host,[commentContainer,commentBlock,inputArea,commentList]);
-	},false);
+	commitButton.addEventListener(
+		"click",
+		function(){
+			buttonClick(_host,[commentContainer,commentBlock,inputArea,commentList]);
+		},
+		false
+	);
 };

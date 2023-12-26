@@ -109,6 +109,7 @@ make httptest
 
 - [gabime/spdlog](https://github.com/gabime/spdlog) - 用于记录日志
 - [nlohmann/json](https://github.com/nlohmann/json) - 用于json文件的解析
+- [OpenSSL/openssl](https://github.com/openssl/openssl) - 目前用于SHA256的哈希处理 - `yum -y install openssl-devel `
 
 ## Record
 

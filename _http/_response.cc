@@ -302,7 +302,7 @@ void TcpResponse::Response400(int sock_fd)
 	buf += _HTTPVERSION;
 	buf += " 400 BAD REQUEST\r\n\r\n";
 
-	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
+	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
 	{
 		// log...
 		MyLibs::CallLogError(
@@ -334,7 +334,7 @@ void TcpResponse::Response404(int sock_fd)
 	buf += _HTTPVERSION;
 	buf += " 404 NOT FOUND\r\n\r\n";
 
-	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
+	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
 	{
 		// log...
 		MyLibs::CallLogError(
@@ -368,7 +368,7 @@ void TcpResponse::Response200_NF(int sock_fd)
 	buf += "Server: Linux\r\n";
 	buf += "Connection: Close\r\n\r\n";
 	
-	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
+	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
 	{
 		// log....
 		MyLibs::CallLogError(
@@ -415,7 +415,7 @@ void TcpResponse::Response200_DB(int sock_fd)
 	buf += std::to_string(bodyLen);
 	buf += "\r\n\r\n";
 	
-	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
+	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
 	{
 		// log...
 		MyLibs::CallLogError(
@@ -431,7 +431,7 @@ void TcpResponse::Response200_DB(int sock_fd)
 
 	if(0 != bodyLen)
 	{
-		if(send(sock_fd,&body[0],bodyLen,0) <= 0)
+		if(send(sock_fd,body.c_str(),bodyLen,0) <= 0)
 		{
 			// log...	
 			MyLibs::CallLogError(
@@ -477,7 +477,7 @@ void TcpResponse::Response200(int sock_fd,const std::string& path,const off_t f_
 	buf += std::to_string(f_size);
 	buf += "\r\n\r\n";
 
-	if(send(sock_fd,&buf[0],buf.size(),0) <= 0)
+	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
 	{
 		// log...
 		MyLibs::CallLogError(

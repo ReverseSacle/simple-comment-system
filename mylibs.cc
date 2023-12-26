@@ -3,16 +3,20 @@
 MyLibs::MyLibs()
 {
 	using json = nlohmann::json;
+
 	file_logger = spdlog::basic_logger_mt("my_logger", _LOGFILEPATH);
 	file_logger->set_pattern("[%Y-%m-%d %H:%M:%S] [%l] %v");
 	std::ifstream json_file(_CONFIGFILEPATH);
 
-	if(!json_file.is_open()){
+	if(!json_file.is_open())
+	{
 		log_option = true;
 		CallDebug(
 			"MyLibs::MyLibs() => Open _config.json fail"
 		);
-	} else {
+	}
+	else 
+	{
 		json json_data = json::parse(json_file);
 		log_option = json_data["log_option"];		
 		root_dir = json_data["root_dir"];
