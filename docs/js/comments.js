@@ -182,7 +182,7 @@ function commentPreShow(data,labels)
 }
 
 window.onload = async function(){
-	const _host = "192.168.80.140";
+	const _host = "192.168.80.141";
 	var commentBlock = document.getElementById("comment-block");/* class="comment-block" */
 
 	var inputBlock = commentBlock.firstElementChild;/* class="input-block" */

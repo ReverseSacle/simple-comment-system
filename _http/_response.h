@@ -7,22 +7,24 @@
 #define _HTTPVERSION "1.0"
 
 // HTTP请求方法
-enum RequestMethod
+enum class RequestMethodType
 {
-    _GET = 1,
-    _POST = 2,
-    _PUT = 3,
-    _DELETE = 4,
-    _HEAD = 5,
-    _OPTIONS = 6,
-    _PATCH = 7,
-    _CONNECT = 8,
-    _TRACE = 9
+	_UNKNOW,
+    _GET,
+    _POST,
+    _PUT,
+    _DELETE,
+    _HEAD,
+    _OPTIONS,
+    _PATCH,
+    _CONNECT,
+    _TRACE
 };
 
 // HTTP请求文件格式
-enum FileType
+enum class RequestFileType
 {
+	_UNKNOW,
     _HTML = 1,
     _CSS = 2,
     _JS = 3,
@@ -30,10 +32,11 @@ enum FileType
 };
 
 // 请求路径功能所属
-enum RequestPathType
+enum class RequestPathType
 {
-    _DATABASE = 1,
-    _API = 2
+	_NORMAL,
+    _DATABASE,
+    _API
 };
 
 class TcpResponse
@@ -46,8 +49,8 @@ private:
     static void Response200(int sock_fd,const std::string& path,const off_t f_size);
 public:
     static void Response400(int sock_fd);
-    static int GetMethodType(const std::string& method_buf);// 获取HTTP请求方法
-    static int GetFileType(const std::string& filename_buf);// 获取HTPP请求文件类型
-    static int GetPathType(const std::string& path_buf);// 获取HTTP请求路径类型
+    static RequestMethodType GetMethodType(const std::string& method_buf);// 获取HTTP请求方法
+    static RequestFileType GetFileType(const std::string& filename_buf);// 获取HTPP请求文件类型
+    static RequestPathType GetPathType(const std::string& path_buf);// 获取HTTP请求路径类型
     static void ResponseSelector(int sock_fd,const std::string& url_buf);// 状态响应选择器
 };

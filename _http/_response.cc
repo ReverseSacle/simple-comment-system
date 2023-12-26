@@ -1,9 +1,9 @@
 #include"_response.h"
 
-int TcpResponse::GetMethodType(const std::string& method_buf)
+RequestMethodType TcpResponse::GetMethodType(const std::string& method_buf)
 {
 	const size_t buf_len = method_buf.size();
-	if(0 == buf_len){ return -1; }
+	if(0 == buf_len){ return RequestMethodType::_UNKNOW; }
 
 	const char* _get = "GET";
 	const char* _post = "POST";
@@ -42,7 +42,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => GET"
 				);
-				return _GET;
+				return RequestMethodType::_GET;
 			}
 			if('\0' == *_put)
 			{
@@ -53,7 +53,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => PUT"
 				);
-				return _PUT;
+				return RequestMethodType::_PUT;
 			}
 			break;
 		}
@@ -68,7 +68,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => POST"
 				); 
-				return _POST;
+				return RequestMethodType::_POST;
 			}
 			if('\0' == *_head)
 			{
@@ -79,7 +79,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => HEAD"
 				); 
-				return _HEAD;
+				return RequestMethodType::_HEAD;
 			}
 			break;
 		} 
@@ -94,7 +94,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => PATCH"
 				); 
-				return _PATCH;
+				return RequestMethodType::_PATCH;
 			}
 			if('\0' == *_trace)
 			{
@@ -105,7 +105,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => TRACE"
 				); 
-				return _TRACE;
+				return RequestMethodType::_TRACE;
 			}
 			break;
 		}
@@ -120,7 +120,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => DELETE"
 				); 
-				return _DELETE;
+				return RequestMethodType::_DELETE;
 			}
 			break;
 		}
@@ -135,7 +135,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => OPTIONS"
 				); 
-				return _OPTIONS;
+				return RequestMethodType::_OPTIONS;
 			}
 			if('\0' == *_connect)
 			{
@@ -146,7 +146,7 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetMethodType() => CONNECT"
 				); 
-				return _CONNECT;
+				return RequestMethodType::_CONNECT;
 			}
 			break;
 		}
@@ -154,13 +154,13 @@ int TcpResponse::GetMethodType(const std::string& method_buf)
 	// log...
 	MyLibs::CallLogInfo("TcpResponse::GetMethodType() => UNKNOW");
 	MyLibs::CallDebug("TcpResponse::GetMethodType() => UNKNOW");
-	return -1;
+	return RequestMethodType::_UNKNOW;
 }
 
-int TcpResponse::GetFileType(const std::string& filename_buf)
+RequestFileType TcpResponse::GetFileType(const std::string& filename_buf)
 {
 	const size_t buf_len = filename_buf.size();
-	if(0 == buf_len){ return -1; }
+	if(0 == buf_len){ return RequestFileType::_UNKNOW; }
 
 	std::string type;
 
@@ -197,7 +197,7 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 			MyLibs::CallDebug(
 				"TcpResponse::GetFileType() => HTML"
 			); 
-			return _HTML;
+			return RequestFileType::_HTML;
 		}
 
 		if(2 == type_len && '\0' == *_js)
@@ -209,7 +209,7 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 			MyLibs::CallDebug(
 				"TcpResponse::GetFileType() => CSS"
 			); 
-			return _JS;
+			return RequestFileType::_JS;
 		}
 
 		if(3 == type_len)
@@ -223,7 +223,7 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetFileType() => JS"
 				); 
-				return _CSS;
+				return RequestFileType::_CSS;
 			}
 
 			if('\0' == *_png)
@@ -235,7 +235,7 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 				MyLibs::CallDebug(
 					"TcpResponse::GetFileType() => PNG"
 				);
-				return _PNG;
+				return RequestFileType::_PNG;
 			}
 		}
 	}
@@ -246,13 +246,13 @@ int TcpResponse::GetFileType(const std::string& filename_buf)
 	MyLibs::CallDebug(
 		"TcpResponse::GetFileType() => UNKNOW"
 	);
-	return -1;
+	return RequestFileType::_UNKNOW;
 }
 
-int TcpResponse::GetPathType(const std::string& path_buf)
+RequestPathType TcpResponse::GetPathType(const std::string& path_buf)
 {
 	const size_t buf_len = path_buf.size();
-	if(0 == buf_len){ return -1; }
+	if(0 == buf_len){ return RequestPathType::_NORMAL; }
 
 	const char* db = "DATABASE";
 	const char* api = "API";
@@ -269,7 +269,7 @@ int TcpResponse::GetPathType(const std::string& path_buf)
 		// log...
 		MyLibs::CallLogInfo("TcpResponse::GetPathType() => DATABASE");
 		MyLibs::CallDebug("TcpResponse::GetPathType() => DATABASE");
-		return _DATABASE;
+		return RequestPathType::_DATABASE;
 	}
 
 	if(3 == buf_len && '\0' == *api)
@@ -281,7 +281,7 @@ int TcpResponse::GetPathType(const std::string& path_buf)
 		MyLibs::CallDebug(
 			"TcpResponse::GetPathType() => API"
 		);
-		return _API;
+		return RequestPathType::_API;
 	}
 
 	// log...
@@ -291,7 +291,7 @@ int TcpResponse::GetPathType(const std::string& path_buf)
 	MyLibs::CallDebug(
 		"TcpResponse::GetPathType() => NORMAL"
 	);
-	return -1;	
+	return RequestPathType::_NORMAL;	
 }
 
 void TcpResponse::Response400(int sock_fd)
@@ -466,10 +466,10 @@ void TcpResponse::Response200(int sock_fd,const std::string& path,const off_t f_
 	buf += "Server: Linux\r\n";
 	switch(GetFileType(path))
 	{
-		case _HTML: { buf += "Content-Type: text/html\r\n"; break; }
-		case _CSS: { buf += "Content-Type: text/css\r\n"; break; }
-		case _JS: { buf += "Content-Type: text/javascript\r\n"; break; }
-		case _PNG: { buf += "Content-Type: image/png\r\n"; break; }
+		case RequestFileType::_HTML: { buf += "Content-Type: text/html\r\n"; break; }
+		case RequestFileType::_CSS: { buf += "Content-Type: text/css\r\n"; break; }
+		case RequestFileType::_JS: { buf += "Content-Type: text/javascript\r\n"; break; }
+		case RequestFileType::_PNG: { buf += "Content-Type: image/png\r\n"; break; }
 		default: { buf += "Content-Type: text/plain\r\n"; }
 	}
 	buf += "Connection: Close\r\n";
@@ -556,8 +556,8 @@ void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
 {
 	switch(GetPathType(url_buf))
 	{
-		case _DATABASE: { Response200_DB(sock_fd); break; }
-		case _API: { Response200_NF(sock_fd); break; }
+		case RequestPathType::_DATABASE: { Response200_DB(sock_fd); break; }
+		case RequestPathType::_API: { Response200_NF(sock_fd); break; }
 		default: 
 		{
 			std::string buf;

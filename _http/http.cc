@@ -251,9 +251,9 @@ void HttpServer::HttpAccept(int sock_fd)
 	}
 	switch(TcpResponse::GetMethodType(req_content.req_method))
 	{
-		case _GET:{ GetMethod(sock_fd,req_content.req_url); break; }
-		case _POST:{ PostMethod(sock_fd,req_content.req_body); break; }
-		case _PUT:{ break; }
+		case RequestMethodType::_GET:{ GetMethod(sock_fd,req_content.req_url); break; }
+		case RequestMethodType::_POST:{ PostMethod(sock_fd,req_content.req_body); break; }
+		case RequestMethodType::_PUT:{ break; }
 		default:
 		{
 			/* 不支持的请求方法 */
