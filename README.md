@@ -46,6 +46,8 @@
 ```tex
 httpserver
 ├── _config
+│   ├── _config.cc
+│   ├── _config.h
 │   ├── _config.json
 │   └── json.hpp
 ├── _database
@@ -106,12 +108,11 @@ make httptest
 ## 依赖库
 
 - [mysql++](https://tangentsoft.com/mysqlpp/wiki?name=MySQL%2B%2B&p&nsm) - 用于mysql数据库的相关操作
-
 - [gabime/spdlog](https://github.com/gabime/spdlog) - 用于记录日志
 - [nlohmann/json](https://github.com/nlohmann/json) - 用于json文件的解析
-- [OpenSSL/openssl](https://github.com/openssl/openssl) - 目前用于SHA256的哈希处理 - `yum -y install openssl-devel `
 
 ## Record
 
 - 使用了`gabime/spdlog`第三方库来配置日志功能
 - 更换不可更改配置的运行方法，采用运行时动态解析JSON文件的方式来获取配置，使用了`nlohmann/json`第三库来解析JSON配置文件
+- 完善之前的改进部分并优化项目代码结构，代码适配`C++11`的特性

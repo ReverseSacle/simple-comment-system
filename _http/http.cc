@@ -19,7 +19,7 @@ std::string HttpServer::UrlFormat(std::string& url_buf)
 		}
 		url += ch;
 	}
-	
+
 	// log...
 	MyLibs::CallLogInfo(
 		"HttpServer::UrlFormat() => Format URL: ",
@@ -159,8 +159,6 @@ void HttpServer::BodyTackle(const std::string& body_buf,Record* record)
 		record->createat += body_buf[i];
 	}
 
-	record->tablename = _TABLENAME;
-
 	// log...
 	MyLibs::CallLogInfo(
 		"HttpServer::BodyTackle() => Succeed"
@@ -206,15 +204,15 @@ void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 
 	// log...
 	MyLibs::CallLogInfo(
-		"HttpServer::PostMethod() => record:\n"
-		"nickname: " + record.nickname + "\n",
+		"HttpServer::PostMethod() => record:\nnickname: " + 
+		record.nickname + "\n",
 		"email: " + record.email + "\n",
 		"content: " + record.content + "\n",
 		"createat: " + record.createat
 	);
 	MyLibs::CallDebug(
-		"HttpServer::PostMethod() => record:\n"
-		"nickname: " + record.nickname + "\n",
+		"HttpServer::PostMethod() => record:\nnickname: " + 
+		record.nickname + "\n",
 		"email: " + record.email + "\n",
 		"content: " + record.content + "\n",
 		"createat: " + record.createat
@@ -240,7 +238,7 @@ void HttpServer::HttpAccept(int sock_fd)
 		);	
 		MyLibs::CallDebug(
 			"HttpServer::Accept() => None apply socket"
-		);	
+		);
 		return;
 	}
 		

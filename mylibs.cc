@@ -2,28 +2,13 @@
 
 MyLibs::MyLibs()
 {
-	using json = nlohmann::json;
-
-	file_logger = spdlog::basic_logger_mt("my_logger", _LOGFILEPATH);
-	file_logger->set_pattern("[%Y-%m-%d %H:%M:%S] [%l] %v");
-	std::ifstream json_file(_CONFIGFILEPATH);
-
-	if(!json_file.is_open())
+	if(MyConfig::GetLogConfig().enable)
 	{
-		log_option = true;
-		CallDebug(
-			"MyLibs::MyLibs() => Open _config.json fail"
+		file_logger = spdlog::basic_logger_mt(
+			"my_logger",
+			MyConfig::GetLogConfig().path
 		);
-	}
-	else 
-	{
-		json json_data = json::parse(json_file);
-		log_option = json_data["log_option"];		
-		root_dir = json_data["root_dir"];
-		CallDebug(
-			"MyLibs::MyLibs() => root_dir: ",
-			root_dir
-		);
+		file_logger->set_pattern("[%Y-%m-%d %H:%M:%S] [%l] %v");
 	}
 }
 
@@ -33,22 +18,18 @@ MyLibs& MyLibs::GetMyself()
 	return mylibs;
 }
 
-std::string MyLibs::GetRootDir(){
-	return GetMyself().root_dir;
-}
-
 void MyLibs::CallDebug(const std::string& str1) 
 {
-    #ifdef _DEBUG
-    std::cout << str1 << std::endl;
-    #endif
+	#ifdef _DEBUG
+	std::cout << str1 << std::endl;
+	#endif
 }
 
 void MyLibs::CallDebug(const std::string& str1,const std::string& str2) 
 {
-    #ifdef _DEBUG
-    std::cout << str1 << str2 << std::endl;
-    #endif
+	#ifdef _DEBUG
+	std::cout << str1 << str2 << std::endl;
+	#endif
 }
 
 void MyLibs::CallDebug(const std::string& str1,const std::string& str2,const std::string& str3) 
@@ -68,7 +49,7 @@ void MyLibs::CallDebug(const std::string& str1,const std::string& str2,const std
 void MyLibs::CallLogInfo(const std::string& str1)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 	_this.file_logger->info("\n" + str1);
@@ -77,7 +58,7 @@ void MyLibs::CallLogInfo(const std::string& str1)
 void MyLibs::CallLogInfo(const std::string& str1,const std::string& str2)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 	_this.file_logger->info("\n" + str1 + str2);
@@ -86,7 +67,7 @@ void MyLibs::CallLogInfo(const std::string& str1,const std::string& str2)
 void MyLibs::CallLogInfo(const std::string& str1,const std::string& str2,const std::string& str3)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 	_this.file_logger->info("\n" + str1 + str2);
@@ -95,7 +76,7 @@ void MyLibs::CallLogInfo(const std::string& str1,const std::string& str2,const s
 void MyLibs::CallLogInfo(const std::string& str1,const std::string& str2,const std::string& str3,const std::string& str4)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 }
@@ -103,7 +84,7 @@ void MyLibs::CallLogInfo(const std::string& str1,const std::string& str2,const s
 void MyLibs::CallLogError(const std::string& str1)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 	_this.file_logger->info("\n" + str1);
@@ -112,7 +93,7 @@ void MyLibs::CallLogError(const std::string& str1)
 void MyLibs::CallLogError(const std::string& str1,const std::string& str2)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 	_this.file_logger->info("\n" + str1 + str2);
@@ -121,7 +102,7 @@ void MyLibs::CallLogError(const std::string& str1,const std::string& str2)
 void MyLibs::CallLogError(const std::string& str1,const std::string& str2,const std::string& str3)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 	_this.file_logger->info("\n" + str1 + str2);
@@ -130,7 +111,7 @@ void MyLibs::CallLogError(const std::string& str1,const std::string& str2,const 
 void MyLibs::CallLogError(const std::string& str1,const std::string& str2,const std::string& str3,const std::string& str4)
 {
 	auto& _this = GetMyself();
-	if(false == _this.log_option){ return; }
+	if(false == MyConfig::GetLogConfig().enable){ return; }
 
 	_this.file_logger->set_level(spdlog::level::info);
 	_this.file_logger->info("\n" + str1 + str2);

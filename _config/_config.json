@@ -1,5 +1,15 @@
 {
-	"log_option": true,
+	"server_host": "192.168.80.142",
 	"root_dir": "docs",	
-	"server_host": "192.168.80.140"
+	"log": {
+		"enable": true,
+		"path": "./httpserver_log.log"
+	},
+	"database": {
+		"host": "127.0.0.1",
+		"user": "root",
+		"password": "@Killl611",
+		"database_name": "CommentSystem",
+		"table_name": "CommentBlock"
+	}
 }

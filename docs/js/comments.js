@@ -15,13 +15,14 @@ async function _GetRequest(host,url)
 {
 	const _URL = "http://" + host + url;
 	var response = await fetch(_URL);
-    
+
 	if(!response.ok){ return [false,""]; }
-    
+
 	return [true,await response.text()];
 }
 
-function textareaBeautify(textsLable,cols){
+function textareaBeautify(textsLable,cols)
+{
 	var cache = "";
 	var texts = (textsLable.value).replace(/\r|\n/g,"");
 	var textLength = texts.length;
@@ -36,7 +37,8 @@ function textareaBeautify(textsLable,cols){
 	return cache;
 }
 
-function contentAppend(labels,nickNameValue,textsContent,creatat){
+function contentAppend(labels,nickNameValue,textsContent,creatat)
+{
 	var commentContainer = labels[0];
 	var commentBlock = labels[1];
 	var userBlock = labels[2];
@@ -175,7 +177,7 @@ function commentPreShow(data,labels)
 		}
 		for(++j;j < sub.length;++j){ createat += sub[j]; }
 
-/*	console.log(nickName + ":" + email + ":" + textsContent + ":" + createat + "\n"); */
+		/* console.log(nickName + ":" + email + ":" + textsContent + ":" + createat + "\n"); */
 		var userBlock = document.createElement("li");
 		var commentListFirstChild = commentList.firstChild;
 		var newLabels = [commentContainer,commentBlock,userBlock,commentList];
@@ -191,7 +193,7 @@ function commentPreShow(data,labels)
 }
 
 window.onload = async function(){
-	const _host = "192.168.80.141";
+	const _host = "192.168.80.142";
 	var commentBlock = document.getElementById("comment-block");/* class="comment-block" */
 
 	var inputBlock = commentBlock.firstElementChild;/* class="input-block" */

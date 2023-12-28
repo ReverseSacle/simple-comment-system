@@ -9,7 +9,7 @@
 // HTTP请求方法
 enum class RequestMethodType
 {
-	_UNKNOW,
+    _UNKNOW,
     _GET,
     _POST,
     _PUT,
@@ -24,7 +24,7 @@ enum class RequestMethodType
 // HTTP请求文件格式
 enum class RequestFileType
 {
-	_UNKNOW,
+    _UNKNOW,
     _HTML = 1,
     _CSS = 2,
     _JS = 3,
@@ -34,7 +34,7 @@ enum class RequestFileType
 // 请求路径功能所属
 enum class RequestPathType
 {
-	_NORMAL,
+    _NORMAL,
     _DATABASE,
     _API
 };

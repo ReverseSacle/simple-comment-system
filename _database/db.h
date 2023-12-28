@@ -2,16 +2,9 @@
 #include"../mylibs.h"
 #include<mysql++/mysql++.h>
 
-#define _HOST "127.0.0.1"
-#define _USER "root"
-#define _PASSWORD "@Killl611"
-#define _DBNAME "CommentSystem"
-#define _TABLENAME "CommentBlock"
-
 // 表记录中一行的数据，处理表名
 struct Record
 {
-	std::string tablename;// 表名
 	std::string nickname;
 	std::string email;
 	std::string content;
@@ -22,6 +15,7 @@ class DataBase
 {
 private:
 	mysqlpp::Connection conn;
+	std::string table_name;
 public:
 	bool Connect();// 链接数据库
 	bool TableInsert(Record* record);// 表记录插入

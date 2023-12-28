@@ -367,7 +367,7 @@ void TcpResponse::Response200_NF(int sock_fd)
 	buf += " 200 OK\r\n";
 	buf += "Server: Linux\r\n";
 	buf += "Connection: Close\r\n\r\n";
-	
+
 	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
 	{
 		// log....
@@ -398,12 +398,12 @@ void TcpResponse::Response200_DB(int sock_fd)
 	DataBase database;
 	std::string buf;
 	std::string body;
-	
+
 	buf += "HTTP/1.0 200 OK\r\n";
 	buf += "Server: Linux\r\n";
 	buf += "Content-Type: text/plain\r\n";
 	buf += "Connection: Close\r\n";
-	
+
 	if(false == database.Connect()){ return; }
 	if(false == database.GetTableRecord(records)){ return; }
 	for(auto& r: records){
@@ -414,7 +414,7 @@ void TcpResponse::Response200_DB(int sock_fd)
 	buf += "Content-Length: ";
 	buf += std::to_string(bodyLen);
 	buf += "\r\n\r\n";
-	
+
 	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
 	{
 		// log...
@@ -564,7 +564,7 @@ void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
 			struct stat st;
 
 			buf += "./";
-			buf += MyLibs::GetRootDir();
+			buf += MyConfig::GetRootDir();
 			buf += url_buf;
 
 			// log...
@@ -577,7 +577,7 @@ void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
 				buf
 			);
 
-			if(-1 == stat(&buf[0],&st)){ Response404(sock_fd); }
+			if(-1 == stat(buf.c_str(),&st)){ Response404(sock_fd); }
 			else{ Response200(sock_fd,buf,st.st_size); }
 		}
 	}

@@ -1,7 +1,7 @@
 #include<signal.h>
-#include"./_http/http.h"
-#include"./_tcp/tcp.h"
 #include"./mylibs.h"
+#include"./_tcp/tcp.h"
+#include"./_http/http.h"
 
 TcpStream server_tcp;
 
@@ -18,7 +18,7 @@ int main(int argc,char* argv[])
 
 	if(false == server_tcp.Construct(80)){ return 0; }
 	if(false == server_tcp.ToListen()){ return 0; }
-	
+
 	int sock_fd = server_tcp.tcp_sock_fd;
 	size_t sock_addr_len = sizeof(struct sockaddr_in);
 
@@ -28,12 +28,12 @@ int main(int argc,char* argv[])
 		struct sockaddr_in sock_addr;
 
 		// log...
-		MyLibs::CallLogInfo("main() => Waiting server connect..."); 
 		MyLibs::CallDebug("main() => Waiting server connect..."); 
+		MyLibs::CallLogInfo("main() => Waiting server connect..."); 
 		accept_fd = accept(sock_fd,(struct sockaddr*)&sock_addr,(socklen_t*)&sock_addr_len);
 		// log...
-		MyLibs::CallLogInfo("main() => Server connected");
 		MyLibs::CallDebug("main() => Server connected");
+		MyLibs::CallLogInfo("main() => Server connected");
 
 		HttpServer::HttpAccept(accept_fd);
 		close(accept_fd);

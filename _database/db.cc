@@ -2,7 +2,16 @@
 
 bool DataBase::Connect()
 {
-	if(false == conn.connect(_DBNAME,_HOST,_USER,_PASSWORD))
+	auto& db_config = MyConfig::GetDatabaseConfig();
+	bool db_connect = conn.connect(
+		db_config.database_name.c_str(),
+		db_config.host.c_str(),
+		db_config.user.c_str(),
+		db_config.password.c_str()
+	);
+
+	table_name = db_config.table_name;
+	if(false == db_connect)
 	{
 		// log...
 		MyLibs::CallLogInfo(
@@ -29,7 +38,7 @@ bool DataBase::TableInsert(Record* record)
 		mysqlpp::Query query = conn.query();
 		std::string _sql = "INSERT INTO ";
 
-		_sql += record->tablename;
+		_sql += table_name;
 		_sql += "(NickName,Email,Content,CreateAt)\nVALUES(";
 		_sql +=	mysqlpp::quote + "'";
 		_sql += record->nickname + "','";
@@ -44,14 +53,14 @@ bool DataBase::TableInsert(Record* record)
 		// log...
 		MyLibs::CallLogInfo(
 			"DataBase::TableInsert() => query\n", 
-			"INSERT INTO " + record->tablename + 
+			"INSERT INTO " + table_name + 
 			"(NickName,Email,Content,CreateAt)\nVALUES('",
 			record->nickname + "','" + record->email + "','",
 			record->content + "','" + record->createat + "');"
 		);
 		MyLibs::CallDebug(
 			"DataBase::TableInsert() => query\n", 
-			"INSERT INTO " + record->tablename + 
+			"INSERT INTO " + table_name + 
 			"(NickName,Email,Content,CreateAt)\nVALUES('" + 
 			record->nickname + "','" + record->email + "','" + 
 			record->content + "','" + record->createat + "');"
@@ -87,18 +96,18 @@ bool DataBase::GetTableRecord(std::vector<Record>& buf)
 	mysqlpp::Query query = conn.query();
 	std::string _sql = "SELECT * FROM " + mysqlpp::quote;
 
-	_sql += _TABLENAME;
+	_sql += table_name;
 	_sql += ";";
 
 	// log...
 	MyLibs::CallLogInfo(
 		"DataBase::TableInsert() => query\nSELECT * FROM ", 
-		_TABLENAME,
+		table_name,
 		";"
 	);
 	MyLibs::CallDebug(
 		"DataBase::TableInsert() => query\nSELECT * FROM ", 
-		_TABLENAME,
+		table_name,
 		";"
 	);
 
@@ -107,7 +116,6 @@ bool DataBase::GetTableRecord(std::vector<Record>& buf)
 	{
 		for(auto& row: res)
 		{
-			std::cout << row << std::endl;
 			Record record;
 			record.nickname = static_cast<std::string>(row[0]);
 			record.email = static_cast<std::string>(row[1]);
