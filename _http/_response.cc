@@ -394,7 +394,7 @@ void TcpResponse::Response200_NF(int sock_fd)
 
 void TcpResponse::Response200_DB(int sock_fd)
 {
-	std::vector<Record> records;
+	std::vector<Record*> records;
 	DataBase database;
 	std::string buf;
 	std::string body;
@@ -404,10 +404,24 @@ void TcpResponse::Response200_DB(int sock_fd)
 	buf += "Content-Type: text/plain\r\n";
 	buf += "Connection: Close\r\n";
 
-	if(false == database.Connect()){ return; }
-	if(false == database.GetTableRecord(records)){ return; }
-	for(auto& r: records){
-		body += (r.nickname + ":" + r.email + ":" + r.content + ":" + r.createat + ",");
+	if(false == database.Connect())
+	{ 
+		Response404(sock_fd);
+		return; 
+	}
+	if(false == database.GetTableRecord(records))
+	{ 
+		Response404(sock_fd);
+		return; 
+	}
+
+	for(auto& r: records)
+	{
+		body += r->nickname + ":";
+		body += r->email + ":";
+		body += r->email_md5 + ":";
+		body += r->create_at + ":";
+		body += r->content + ",";
 	}
 
 	const size_t bodyLen = body.size();

@@ -137,26 +137,28 @@ void HttpServer::BodyTackle(const std::string& body_buf,Record* record)
 		return; 
 	}
 
-	size_t i = 0;
-
+	int member_ptr = 0;
 	(record->nickname).clear();
 	(record->email).clear();
+	(record->email_md5).clear();
+	(record->create_at).clear();
 	(record->content).clear();
-	(record->createat).clear();
-	while(i < n && ':' != body_buf[i]){ 
-		record->nickname += body_buf[i++];
-	} 
-
-	for(++i;i < n && ':' != body_buf[i];++i){
-		record->email += body_buf[i];
-	}
-
-	for(++i;i < n && ':' != body_buf[i];++i){
-		record->content += body_buf[i];
-	}
-
-	for(++i;i < n;++i){
-		record->createat += body_buf[i];
+	
+	for(size_t i = 0;i < n;++i)
+	{
+		const char c = body_buf[i];
+		if(':' == c && 4 != member_ptr){ ++member_ptr; } 
+		else 
+		{
+			switch(member_ptr)
+			{
+				case 0: { record->nickname += c; break; }
+				case 1: { record->email += c; break; }
+				case 2: { record->email_md5 += c; break; }
+				case 3: { record->create_at += c; break; }
+				case 4: { record->content += c; break; }
+			}
+		}
 	}
 
 	// log...
@@ -204,21 +206,27 @@ void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 
 	// log...
 	MyLibs::CallLogInfo(
-		"HttpServer::PostMethod() => record:\nnickname: " + 
-		record.nickname + "\n",
-		"email: " + record.email + "\n",
-		"content: " + record.content + "\n",
-		"createat: " + record.createat
+		"HttpServer::PostMethod() => record:"
+		"\nnickname: " + record.nickname +
+		"\nemail: " + record.email,
+		"\nemail_md5: " + record.email_md5,
+		"\ncreate_at: " + record.create_at,
+		"\ncontent: " + record.content
 	);
 	MyLibs::CallDebug(
-		"HttpServer::PostMethod() => record:\nnickname: " + 
-		record.nickname + "\n",
-		"email: " + record.email + "\n",
-		"content: " + record.content + "\n",
-		"createat: " + record.createat
+		"HttpServer::PostMethod() => record:"
+		"\nnickname: " + record.nickname +
+		"\nemail: " + record.email,
+		"\nemail_md5: " + record.email_md5,
+		"\ncreate_at: " + record.create_at,
+		"\ncontent: " + record.content
 	);
 
-	if(false == database.Connect()){ return; }
+	if(false == database.Connect())
+	{ 
+		TcpResponse::Response400(sock_fd);
+		return; 
+	}
 	database.TableInsert(&record);
 
 	// log...

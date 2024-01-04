@@ -56,8 +56,6 @@ httpserver
 ├── docs
 │   ├── css
 │   │   └── comments.css
-│   ├── img
-│   │   └── img.png
 │   ├── index.html
 │   └── js
 │       └── comments.js
@@ -66,7 +64,9 @@ httpserver
 │   ├── http.h
 │   ├── _response.cc
 │   └── _response.h
+├── httpserver
 ├── httpserver.cc
+├── httpserver_log.log
 ├── makefile
 ├── mylibs.cc
 ├── mylibs.h
@@ -105,14 +105,21 @@ make httptest
 
 可通过`ctrl c`中断，之后直接执行`./httpserver`即可启动服务端进程，再在浏览器中的输入栏输入`http://(SecureCRT连接的IP地址)/index.html`，回车即可看到评论系统的前端界面。
 
-## 依赖库
+## 第三方依赖
 
-- [mysql++](https://tangentsoft.com/mysqlpp/wiki?name=MySQL%2B%2B&p&nsm) - 用于mysql数据库的相关操作
-- [gabime/spdlog](https://github.com/gabime/spdlog) - 用于记录日志
-- [nlohmann/json](https://github.com/nlohmann/json) - 用于json文件的解析
+- [mysql++](https://tangentsoft.com/mysqlpp/wiki?name=MySQL%2B%2B&p&nsm) - 用于mysql数据库的相关操作(`C++`)
+- [gabime/spdlog](https://github.com/gabime/spdlog) - 用于记录日志(`C++`)
+- [nlohmann/json](https://github.com/nlohmann/json) - 用于json文件的解析(`C++`)
+- `crypto-js` - 用于SHA256的哈希处理(JavaScript)
+
+  ```html
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/core.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/sha256.js"></script>
+  ```
 
 ## Record
 
 - 使用了`gabime/spdlog`第三方库来配置日志功能
 - 更换不可更改配置的运行方法，采用运行时动态解析JSON文件的方式来获取配置，使用了`nlohmann/json`第三库来解析JSON配置文件
-- 完善之前的改进部分并优化项目代码结构，代码适配`C++11`的特性
+- 完善之前的改进部分并优化项目代码结构，使用`C++11`特性改善了代码
+- 更改数据库的存储数据类型，并利用`crypto-js`进行SHA256的哈希处理，以此适配avatar头像。部分代码的结构进行了调整

@@ -1,24 +1,31 @@
 async function _PostRequest(host,url,data)
 {
-	const _URL = "http://" + host + url;
-	var response = await fetch(_URL,{
-		method: "POST",
-		headers:{
-			"Content-Type": "text/plain",
-		},
-		body: data,
-	});
-	return response.ok;
+	try{
+		const _URL = "http://" + host + url;
+		var response = await fetch(
+			_URL,
+			{
+				method: "POST",
+				headers:{
+					"Content-Type": "text/plain",
+				},
+				body: data,
+			}
+		);
+		return response.ok;
+	} catch(error) { return false; }
 }
 
 async function _GetRequest(host,url)
 {
-	const _URL = "http://" + host + url;
-	var response = await fetch(_URL);
+	try{
+		const _URL = "http://" + host + url;
+		var response = await fetch(_URL);
 
-	if(!response.ok){ return [false,""]; }
+		if(!response.ok){ return [false,""]; }
 
-	return [true,await response.text()];
+		return [true,await response.text()];
+	} catch(error) { return [false,""]; }
 }
 
 function textareaBeautify(textsLable,cols)
@@ -37,38 +44,31 @@ function textareaBeautify(textsLable,cols)
 	return cache;
 }
 
-function contentAppend(labels,nickNameValue,textsContent,creatat)
+function avatarAppend(main_label,email_md5)
 {
-	var commentContainer = labels[0];
-	var commentBlock = labels[1];
-	var userBlock = labels[2];
-	var commentList = labels[3];
-	var mainUserLable = document.createElement("div");
-	mainUserLable.setAttribute("class","main-level clearfix");
-
-	/* avatar area  start-area */
 	var avatarLable = document.createElement("div");
 	avatarLable.setAttribute("class","avatar");
 
-	var imgUrl = "./img/img.png";
-	avatarLable.innerHTML = "<img src=\"" + imgUrl + "\"alt>";
-	mainUserLable.appendChild(avatarLable);
-	/* avatar area  end-area */
+	var imgUrl = "https://gravatar.com/avatar/";
+	avatarLable.innerHTML = "<img src=\"" + imgUrl + email_md5 + "\" alt>";
+	main_label.appendChild(avatarLable);
+}
 
+function commentAppend(main_label,record)
+{
 	var commentBoxLable = document.createElement("div");
 	commentBoxLable.setAttribute("class","comment-box");
 
-	/* comment box of coment area start-area */
 	/* comment box head area star-area */
 	var boxHead = document.createElement("div");
 	boxHead.setAttribute("class","cbox-head clearfix");
 
 	var authorName = document.createElement("span");
 	authorName.setAttribute("class","cbauthor-name");
-	authorName.innerText = nickNameValue;
+	authorName.innerText = record.nickname;
 
 	var timeSpend = document.createElement("span");
-	var timeSpace = Date.now() - creatat;
+	var timeSpace = Date.now() - record.create_at;
 	var days = timeSpace / 1000 / 60 / 60 / 24;
 	var f_days = Math.floor(days);
 	var hours = timeSpace / 1000 / 60 / 60 - (24 * f_days);
@@ -89,11 +89,24 @@ function contentAppend(labels,nickNameValue,textsContent,creatat)
 	var boxContent = document.createElement("span");
 	boxContent.setAttribute("class","cbox-conten");
 
-	boxContent.innerHTML = textsContent;
+	boxContent.innerHTML = record.content;
 	commentBoxLable.appendChild(boxContent);
-	/* comment box of coment area end-area */
 
-	mainUserLable.appendChild(commentBoxLable);
+	main_label.appendChild(commentBoxLable);
+}
+
+function contentAppend(labels,record)
+{
+	var commentContainer = labels.commentContainer;
+	var commentBlock = labels.commentBlock;
+	var userBlock = labels.userBlock;
+	var commentList = labels.commentList;
+	var mainUserLable = document.createElement("div");
+
+	mainUserLable.setAttribute("class","main-level clearfix");
+
+	avatarAppend(mainUserLable,record.email_md5);
+	commentAppend(mainUserLable,record);
 	userBlock.appendChild(mainUserLable);
 
 	/* state stretch */
@@ -106,83 +119,103 @@ function contentAppend(labels,nickNameValue,textsContent,creatat)
 
 async function buttonClick(host,labels)
 {
-	var commentContainer = labels[0];
-	var commentBlock = labels[1];
-	var inputArea = labels[2];
-	var commentList = labels[3];
+	var commentContainer = labels.commentContainer;
+	var commentBlock = labels.commentBlock;
+	var inputArea = labels.inputArea;
+	var commentList = labels.commentList;
 
 	var inputs = inputArea.getElementsByTagName("input");
-	var nickName = inputs[0];
-	var email = inputs[1];
+	var nickname_label = inputs[0];
+	var email_label = inputs[1];
+	var email_md5 = CryptoJS.SHA256(email_label.value);
 	var texts = inputArea.getElementsByTagName("textarea")[0];
+	var nicknameValue = nickname_label.value;
 
-	var nickNameValue = nickName.value;
-	if(0 != nickNameValue.length)
+	if(0 != nicknameValue.length)
 	{
 		/* current time */
 		var textsContent = textareaBeautify(texts,texts.cols);
 		var curTime = Date.now();
-		var data = nickNameValue + ":" + email.value + ":" + textsContent + ":" + curTime; 
+		var data = nicknameValue + ":" + email_label.value + ":" + email_md5 + ":" + curTime  + ":" + textsContent;
 
 		if(true == await _PostRequest(host,"/api",data))
 		{
-			var userBlock = document.createElement("li");
-			var commentListFirstChild = commentList.firstChild;
-			var newLabels = [commentContainer,commentBlock,userBlock,commentList];
+			commentContainer.removeChild(commentList);
+			commentBlock.style.height = "360px";
+			commentContainer.style.height = "0px";
 
-			contentAppend(
-				newLabels,
-				nickNameValue,
-				textsContent,curTime,
-			);
-			if(null == commentListFirstChild)
-			{ 
-				commentList.appendChild(userBlock); 
-				commentList.style.display = "block";
-			}
-			else{ commentList.insertBefore(userBlock,commentListFirstChild); }
+			var commentList = document.createElement("ul");
+
+			commentList.setAttribute("class","comment-list");
+			commentContainer.appendChild(commentList);
+
+			labels.commentList = commentList;
+			commentPreShow(host,labels);
 		}
 	}
 
-	nickName.value = "";
-	email.value = "";
+	nickname_label.value = "";
+	email_label.value = "";
 	texts.value = "";
 }
 
-function commentPreShow(data,labels)
+async function commentPreShow(host,labels)
 {
-	var commentContainer = labels[0];
-	var commentBlock = labels[1];
-	var commentList = labels[2];
-	var array = data.split(",");
-	array.pop();
+	var responseData = await _GetRequest(host,"/database");
 
+	if(false == responseData[0]){ return; }
+	var data = responseData[1];
+	var commentContainer = labels.commentContainer;
+	var commentBlock = labels.commentBlock;
+	var commentList = labels.commentList;
+	var newLabels = new Object();
+	var record = new Object();
+	var array = data.split(",");
+
+	array.pop();
 	for(var i = 0;i < array.length;++i)
 	{
 		var sub = array[i];
-		var nickName = "";
+		var nickname = "";
 		var email = "";
+		var email_md5 = "";
 		var textsContent = "";
-		var createat = "";
-		var j = 0;
+		var create_at = "";
+		var member_ptr = 0;
 
-		while(j < sub.length && ':' != sub[j]){
-			nickName += sub[j++];
-		}
-		for(++j;j < sub.length && ':' != sub[j];++j){
-			email += sub[j];
-		}
-		for(++j;j < sub.length && ':' != sub[j];++j){
-			textsContent += sub[j];
-		}
-		for(++j;j < sub.length;++j){ createat += sub[j]; }
+		for(var j = 0;j < sub.length;++j)
+		{
+			const c = sub[j];
 
-		/* console.log(nickName + ":" + email + ":" + textsContent + ":" + createat + "\n"); */
+			if(":" == c && 4 != member_ptr){ ++member_ptr; }
+			else
+			{
+				switch(member_ptr)
+				{
+					case 0: { nickname += c; break; }
+					case 1: { email += c; break; }
+					case 2: { email_md5 += c; break; }
+					case 3: { create_at += c; break; }
+					case 4: { textsContent += c; break; }
+				}
+			}
+		}
+		/* console.log(nickname + ":" + email + ":" + textsContent + ":" + create_at + "\n"); */
 		var userBlock = document.createElement("li");
 		var commentListFirstChild = commentList.firstChild;
-		var newLabels = [commentContainer,commentBlock,userBlock,commentList];
 
-		contentAppend(newLabels,nickName,textsContent,createat);
+		newLabels.commentContainer = commentContainer;
+		newLabels.commentBlock = commentBlock;
+		newLabels.userBlock = userBlock;
+		newLabels.commentList = commentList;
+
+		record.nickname = nickname;
+		record.email = email;
+		record.email_md5 = email_md5;
+		record.create_at = create_at;
+		record.content = textsContent;		
+
+		contentAppend(newLabels,record);
 		if(null == commentListFirstChild)
 		{ 
 			commentList.appendChild(userBlock);
@@ -192,11 +225,12 @@ function commentPreShow(data,labels)
 	}
 }
 
-window.onload = async function(){
-	const _host = "192.168.80.142";
-	var commentBlock = document.getElementById("comment-block");/* class="comment-block" */
-
+window.onload = function(){
+	const _host = "192.168.80.143";
+	/* class="comment-block" */
+	var commentBlock = document.getElementById("comment-block");
 	var inputBlock = commentBlock.firstElementChild;/* class="input-block" */
+
 	/*** input-block ***/
 	/******************************/
 	/* class="input-area" */
@@ -206,21 +240,24 @@ window.onload = async function(){
 	/* class="commit" */
 	var commitButton = buttonArea.getElementsByTagName("button")[0];
 	/******************************/
-	var commentContainer = inputBlock.nextElementSibling;/* class="comment-container" */
 
-	var responseData = await _GetRequest(_host,"/database");
-	if(false == responseData[0]){ return; }
-
+	var newlabels = new Object();
+	/* class="comment-container" */
+	var commentContainer = inputBlock.nextElementSibling;
 	var commentList = document.createElement("ul");
+
 	commentList.setAttribute("class","comment-list");
 	commentContainer.appendChild(commentList);
-	commentPreShow(responseData[1],[commentContainer,commentBlock,commentList]);
+	
+	newlabels.commentContainer = commentContainer;
+	newlabels.commentBlock = commentBlock;
+	newlabels.commentList = commentList;
+	newlabels.inputArea = inputArea;
 
+	commentPreShow(_host,newlabels);
 	commitButton.addEventListener(
 		"click",
-		function(){
-			buttonClick(_host,[commentContainer,commentBlock,inputArea,commentList]);
-		},
+		function(){ buttonClick(_host,newlabels); },
 		false
 	);
 };

@@ -1,6 +1,6 @@
 CP :=g++
 AP1 :=-Wall
-AP2 :=-Wall -g
+AP2 :=-Wall
 STD :=-std=c++11
 DEBUG :=-D _DEBUG -g
 # 头文件
