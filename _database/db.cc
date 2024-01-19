@@ -1,33 +1,5 @@
 #include"db.h"
 
-bool DataBase::table_isnull(mysqlpp::Connection& connector,std::string& db_name,std::string& table_name)
-{
-	mysqlpp::Query query = connector.query();
-	std::string _sql;
-	
-	_sql += ("SELECT COUNT(*) FROM information_schema.tables"
-			" WHERE table_schema = '" + db_name + 
-			"' AND table_name = '" + table_name + "';"
-	);
-	MyLibs::CallDebug(
-		"DataBase::table_isnull() => query\n",
-		_sql
-	);
-	query << _sql;	
-	
-	mysqlpp::StoreQueryResult res = query.store();
-	if(0 == static_cast<int>(res[0][0])){
-		MyLibs::CallDebug(
-			"DataBase::table_isnull() => true"
-		);
-		return true;
-	}
-	MyLibs::CallDebug(
-		"DataBase::table_isnull() => false"
-	);
-	return false;
-}
-
 bool DataBase::Connect()
 {
 	auto& db_config = MyConfig::GetDatabaseConfig();
@@ -61,82 +33,174 @@ bool DataBase::Connect()
 	return true;
 }
 
+bool DataBase::TableIsNull()
+{
+	mysqlpp::Query query = conn.query();
+	std::string _sql;
+
+	_sql += (
+		"SELECT COUNT(*) FROM information_schema.tables"
+		" WHERE table_schema = '" + db_name + 
+		"' AND table_name = '" + table_name + "';"
+	);
+	MyLibs::CallDebug(
+		"DataBase::TableIsNull() => query\n",
+		_sql
+	);
+	query << _sql;	
+
+	if(0 == static_cast<int>(query.store()[0][0])){
+		return false;
+	} 	
+	return true;
+}
+
+int DataBase::TableRecordCount()
+{
+	if(false == TableIsNull()){
+		return 0;
+	}
+
+	mysqlpp::Query query = conn.query();
+	std::string _sql;
+
+	_sql += (
+		"SELECT COUNT(*) FROM " + table_name +
+		";"
+	);
+	MyLibs::CallDebug(
+		"DataBase::TableRecordCount() => query\n",
+		_sql
+	);
+	query << _sql;	
+
+	return static_cast<int>(query.store()[0][0]);
+}
+
+int DataBase::GetTableParentRecordNum()
+{
+	if(false == TableIsNull()){
+		return 0;
+	}
+
+	mysqlpp::Query query = conn.query();
+	std::string _sql;
+
+	_sql += (
+		"SELECT COUNT(*) FROM " + table_name +
+		" WHERE parent_id IS NULL" 
+		" AND response_id IS NULL" 
+		";"
+	);
+	MyLibs::CallDebug(
+		"DataBase::GetTableParentRecordNum() => query\n",
+		_sql
+	);
+	query << _sql;	
+
+	return static_cast<int>(query.store()[0][0]);
+}
+
 bool DataBase::TableInsert(Record* record)
 {
 	try{
-		mysqlpp::Query query = conn.query();
 		std::string _sql;
+		mysqlpp::Query query = conn.query();
+		int count = 0;
 
-		if(table_isnull(conn,db_name,table_name))
+		if(false == this->TableIsNull())
 		{
 			mysqlpp::Query query_create = conn.query();
+
+			MyLibs::CallDebug(
+				"DataBase::TableInsert => Table is NULL"
+			);
 			_sql += "CREATE TABLE ";
 			_sql += table_name;
 			_sql += "(";
-			_sql += "\nNickName CHAR(64),";
-			_sql += "\nEmail CHAR(64),";
-			_sql += "\nEmailMd5 CHAR(65),";
-			_sql += "\nCreateAt CHAR(16),";
-			_sql += "\nContent TEXT";
+			_sql += "\nid CHAR(8) PRIMARY KEY,";
+			_sql += "\nparent_id CHAR(8),";
+			_sql += "\nresponse_id CHAR(8),";
+			_sql += "\nnick_name CHAR(64),";
+			_sql += "\nmail CHAR(64),";
+			_sql += "\nmail_md5 CHAR(65),";
+			_sql += "\ncreate_at CHAR(16),";
+			_sql += "\ncomment TEXT";
 			_sql += "\n);";
 
-			MyLibs::CallDebug(
-				"DataBase::Connect() =>	query\n",
-				"CREATE TABLE " + table_name,
-				"("
-				"\nNickName CHAR(64),"
-				"\nEmail CHAR(64),"
-				"\nEmailMd5 CHAR(65),"
-				"\nCreateAt CHAR(16),"
-				"\nContent TEXT"	
-				"\n);"	
+			MyLibs::CallLogInfo(
+				"DataBase::TableInsert => query\n",
+				_sql
 			);
+			MyLibs::CallDebug(
+				"DataBase::TableInsert => query\n",
+				_sql
+			);
+
 			query_create << _sql;
 			query_create.execute();
 			_sql.clear();			
-		}
+		} else { count = TableRecordCount(); }
 
 		_sql += "INSERT INTO ";
 		_sql += table_name;
-		_sql += "(NickName,Email,EmailMd5,CreateAt,Content)\n";
+		_sql += "(id,parent_id,response_id,nick_name,mail,mail_md5,create_at,comment)\n";
 		_sql += "VALUES('";
-		_sql += record->nickname + "','";
-		_sql += record->email + "','";
-		_sql += record->email_md5 + "','";
+		_sql += std::to_string(count + 1) + "',";
+
+		if((record->parent_id).empty() && (record->response_id).empty())
+		{
+			_sql += "NULL,";
+			_sql += "NULL,'";
+		}
+		else
+		{
+			_sql += "'";
+			_sql += record->parent_id + "','";
+			_sql += record->response_id + "','";
+		}
+		_sql += record->nick_name + "','";
+		_sql += record->mail + "','";
+		_sql += record->mail_md5 + "','";
 		_sql += record->create_at +"','";
-		_sql += record->content;
+		_sql += record->comment;
 		_sql += "');"; 
 
 		// log...
 		MyLibs::CallLogInfo(
 			"DataBase::TableInsert() => query\n" 
 			"INSERT INTO " + table_name + 
-			"(NickName,Email,EmailMd5,CreateAt,Content)\n"
+			"(id,parent_id,response_id,nick_name,mail,mail_md5,create_at,comment)\n"	
 			"VALUES('",
-			record->nickname + "','" + 
-			record->email + "','" +
-			record->email_md5 + "','" +
+			std::to_string(count + 1) + "','" + 
+			record->parent_id + "','" + 
+			record->response_id + "','" + 
+			record->nick_name + "','" + 
+			record->mail + "','" +
+			record->mail_md5 + "','" +
 			record->create_at + "','" + 
-			record->content + 
+			record->comment + 
 			"');"
 		);
 		MyLibs::CallDebug(
 			"DataBase::TableInsert() => query\n" 
 			"INSERT INTO " + table_name + 
-			"(NickName,Email,EmailMd5,CreateAt,Content)\n"
-			"VALUES('" + 
-			record->nickname + "','" + 
-			record->email + "','" + 
-			record->email_md5 + "','" +
+			"(id,parent_id,response_id,nick_name,mail,mail_md5,create_at,comment)\n"	
+			"VALUES('",
+			std::to_string(count + 1) + "','" + 
+			record->parent_id + "','" + 
+			record->response_id + "','" + 
+			record->nick_name + "','" + 
+			record->mail + "','" +
+			record->mail_md5 + "','" +
 			record->create_at + "','" + 
-			record->content + 
+			record->comment + 
 			"');"
 		);
 
 		query << _sql;
 		query.execute();
 	} catch(const mysqlpp::Exception& er) {
-		// log...
 		MyLibs::CallLogError(
 			"DataBase::TableInsert() => query fail.\nreason: ",
 			er.what()
@@ -158,30 +222,37 @@ bool DataBase::TableInsert(Record* record)
 	return true;
 }
 
-bool DataBase::GetTableRecord(std::vector<Record*>& buf)
+bool DataBase::GetTableParentRecord(std::vector<Record*>& buf)
 {
 	mysqlpp::Query query = conn.query();
 
-	if(table_isnull(conn,db_name,table_name)){
+	if(false == TableIsNull()){
 		return false;
 	}
 	std::string _sql;
 
 	_sql += "SELECT * FROM ";
 	_sql += table_name;
+	_sql += " WHERE parent_id IS NULL";
+	_sql += " AND response_id IS NULL";
+	_sql += " ORDER BY create_at";
 	_sql += ";";
 
 	// log...
 	MyLibs::CallLogInfo(
 		"DataBase::GetTableRecord() => query\n"
-		"SELECT * FROM ", 
-		table_name,
+		"SELECT * FROM " + table_name,
+		" WHERE parent_id IS NULL" 
+		" AND response_id IS NULL" 
+		" ORDER BY create_at"	
 		";"
 	);
 	MyLibs::CallDebug(
 		"DataBase::GetTableRecord() => query\n"
-		"SELECT * FROM ", 
-		table_name,
+		"SELECT * FROM " + table_name,
+		" WHERE parent_id IS NULL" 
+		" AND response_id IS NULL" 
+		" ORDER BY create_at"	
 		";"
 	);
 
@@ -191,11 +262,14 @@ bool DataBase::GetTableRecord(std::vector<Record*>& buf)
 		for(auto& row: res)
 		{
 			Record* record = new Record();
-			record->nickname = std::string(row["NickName"]);
-			record->email = std::string(row["Email"]);
-			record->email_md5 = std::string(row["EmailMd5"]);
-			record->create_at = std::string(row["CreateAt"]);
-			record->content = std::string(row["Content"]);
+			record->id = std::string(row["id"]);
+			record->parent_id = std::string(row["parent_id"]);
+			record->response_id = std::string(row["response_id"]);
+			record->nick_name = std::string(row["nick_name"]);
+			record->mail = std::string(row["mail"]);
+			record->mail_md5 = std::string(row["mail_md5"]);
+			record->create_at = std::string(row["create_at"]);
+			record->comment = std::string(row["comment"]);
 			buf.push_back(record);
 		}
 	}
@@ -222,3 +296,78 @@ bool DataBase::GetTableRecord(std::vector<Record*>& buf)
 	);
 	return true;
 }	
+
+bool DataBase::GetTableChildRecord(std::vector<Record*>& buf)
+{
+	mysqlpp::Query query = conn.query();
+
+	if(false == TableIsNull()){
+		return false;
+	}
+	std::string _sql;
+
+	_sql += "SELECT * FROM ";
+	_sql += table_name;
+	_sql += " WHERE parent_id IS NOT NULL";
+	_sql += " AND response_id IS NOT NULL";
+	_sql += " ORDER BY create_at";
+	_sql += ";";
+
+	// log...
+	MyLibs::CallLogInfo(
+		"DataBase::GetTableRecord() => query\n"
+		"SELECT * FROM " + table_name,
+		" WHERE parent_id IS NOT NULL" 
+		" AND response_id IS NOT NULL" 
+		" ORDER BY create_at"
+		";"
+	);
+	MyLibs::CallDebug(
+		"DataBase::GetTableRecord() => query\n"
+		"SELECT * FROM " + table_name,
+		" WHERE parent_id IS NOT NULL" 
+		" AND response_id IS NOT NULL" 
+		" ORDER BY create_at"
+		";"
+	);
+
+	query << _sql;
+	if(mysqlpp::StoreQueryResult res = query.store())
+	{
+		for(auto& row: res)
+		{
+			Record* record = new Record();
+			record->id = std::string(row["id"]);
+			record->parent_id = std::string(row["parent_id"]);
+			record->response_id = std::string(row["response_id"]);
+			record->nick_name = std::string(row["nick_name"]);
+			record->mail = std::string(row["mail"]);
+			record->mail_md5 = std::string(row["mail_md5"]);
+			record->create_at = std::string(row["create_at"]);
+			record->comment = std::string(row["comment"]);
+			buf.push_back(record);
+		}
+	}
+	else
+	{
+		// log...
+		MyLibs::CallLogError(
+			"DataBase::GetTableRecord() => query.store() fail.\nreason: ",
+			query.error()
+		);
+		MyLibs::CallDebug(
+			"DataBase::GetTableRecord() => query.store() fail.\nreason: ",
+			query.error()
+		);
+		return false;
+	}
+
+	// log...
+	MyLibs::CallLogInfo(
+		"DataBase::GetTableRecord() => Succeed"
+	);
+	MyLibs::CallDebug(
+		"DataBase::GetTableRecord() => Succeed"
+	);
+	return true;
+}

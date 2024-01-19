@@ -55,6 +55,7 @@ httpserver
 │   └── db.h
 ├── docs
 │   ├── css
+│   │   ├── comment_reply.css
 │   │   └── comments.css
 │   ├── index.html
 │   └── js
@@ -64,9 +65,7 @@ httpserver
 │   ├── http.h
 │   ├── _response.cc
 │   └── _response.h
-├── httpserver
 ├── httpserver.cc
-├── httpserver_log.log
 ├── makefile
 ├── mylibs.cc
 ├── mylibs.h
@@ -119,7 +118,8 @@ make httptest
 
 ## Record
 
-- 使用了`gabime/spdlog`第三方库来配置日志功能
-- 更换不可更改配置的运行方法，采用运行时动态解析JSON文件的方式来获取配置，使用了`nlohmann/json`第三库来解析JSON配置文件
-- 完善之前的改进部分并优化项目代码结构，使用`C++11`特性改善了代码
-- 更改数据库的存储数据类型，并利用`crypto-js`进行SHA256的哈希处理，以此适配avatar头像。部分代码的结构进行了调整
+- 使用了`gabime/spdlog`第三方库来配置日志功能 - `tag v0.0.2`
+- 更换不可更改配置的运行方法，采用运行时动态解析JSON文件的方式来获取配置，使用了`nlohmann/json`第三库来解析JSON配置文件 - `tag v0.0.3`
+- 完善之前的改进部分并优化项目代码结构，使用`C++11`特性改善了代码 - `tag v0.0.4`
+- 更改数据库的存储数据类型，并利用`crypto-js`进行SHA256的哈希处理，以此适配avatar头像。部分代码的结构进行了调整 - `tag v0.0.5`
+- 更改数据库的表结构，添加了评论回复功能的前端样式、前端回复功能的交互代码、后端交互代码和服务器后端与前端的交互代码，之后，对前端的样式代码进行了文件拆分，对前端的js代码进行了重构 - `tag v0.0.6`

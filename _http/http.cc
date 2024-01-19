@@ -138,25 +138,31 @@ void HttpServer::BodyTackle(const std::string& body_buf,Record* record)
 	}
 
 	int member_ptr = 0;
-	(record->nickname).clear();
-	(record->email).clear();
-	(record->email_md5).clear();
+	(record->id).clear();
+	(record->parent_id).clear();
+	(record->response_id).clear();
+	(record->nick_name).clear();
+	(record->mail).clear();
+	(record->mail_md5).clear();
 	(record->create_at).clear();
-	(record->content).clear();
-	
+	(record->comment).clear();
+
 	for(size_t i = 0;i < n;++i)
 	{
 		const char c = body_buf[i];
-		if(':' == c && 4 != member_ptr){ ++member_ptr; } 
+		if(':' == c && 7 != member_ptr){ ++member_ptr; } 
 		else 
 		{
 			switch(member_ptr)
 			{
-				case 0: { record->nickname += c; break; }
-				case 1: { record->email += c; break; }
-				case 2: { record->email_md5 += c; break; }
-				case 3: { record->create_at += c; break; }
-				case 4: { record->content += c; break; }
+				case 0: { record->id += c; break; }
+				case 1: { record->parent_id += c; break; }
+				case 2: { record->response_id += c; break; }
+				case 3: { record->nick_name += c; break; }
+				case 4: { record->mail += c; break; }
+				case 5: { record->mail_md5 += c; break; }
+				case 6: { record->create_at += c; break; }
+				case 7: { record->comment += c; break; }
 			}
 		}
 	}
@@ -207,19 +213,25 @@ void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 	// log...
 	MyLibs::CallLogInfo(
 		"HttpServer::PostMethod() => record:"
-		"\nnickname: " + record.nickname +
-		"\nemail: " + record.email,
-		"\nemail_md5: " + record.email_md5,
+		"\nid: " + record.id +
+		"\nparent_id: " + record.parent_id +
+		"\nresponse_id: " + record.response_id +
+		"\nnick_name: " + record.nick_name +
+		"\nmail: " + record.mail,
+		"\nmail_md5: " + record.mail_md5,
 		"\ncreate_at: " + record.create_at,
-		"\ncontent: " + record.content
+		"\ncomment: " + record.comment
 	);
 	MyLibs::CallDebug(
 		"HttpServer::PostMethod() => record:"
-		"\nnickname: " + record.nickname +
-		"\nemail: " + record.email,
-		"\nemail_md5: " + record.email_md5,
+		"\nid: " + record.id +
+		"\nparent_id: " + record.parent_id +
+		"\nresponse_id: " + record.response_id +
+		"\nnick_name: " + record.nick_name +
+		"\nmail: " + record.mail,
+		"\nmail_md5: " + record.mail_md5,
 		"\ncreate_at: " + record.create_at,
-		"\ncontent: " + record.content
+		"\ncomment: " + record.comment
 	);
 
 	if(false == database.Connect())
@@ -233,7 +245,7 @@ void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 	MyLibs::CallLogInfo("HttpServer::PostMethod() => Response...");
 	MyLibs::CallDebug("HttpServer::PostMethod() => Response...");
 
-	TcpResponse::ResponseSelector(sock_fd,"api");
+	TcpResponse::ResponseSelector(sock_fd,"/api");
 }
 
 void HttpServer::HttpAccept(int sock_fd)

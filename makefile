@@ -1,6 +1,6 @@
 CP :=g++
 AP1 :=-Wall
-AP2 :=-Wall
+AP2 :=-Wall -g
 STD :=-std=c++11
 DEBUG :=-D _DEBUG -g
 # 头文件
@@ -45,7 +45,7 @@ http: ./_config/_config.* ./mylibs.* ./_tcp/tcp.* \
 httpserver: ./_config/_config.* ./mylibs.* ./_tcp/tcp.* \
 			./_http/_response.* ./_http/http.* ./_database/db.* \
 			./_http/http.* ./httpserver.cc
-	$(CP) $(AP1) $(STD) $(DEBUG) $(CPPMYSQL) ./_config/_config.cc \
+	$(CP) $(AP2) $(STD) $(DEBUG) $(CPPMYSQL) ./_config/_config.cc \
 	./mylibs.cc ./_tcp/tcp.cc ./_database/db.cc ./_http/_response.cc \
 	./_http/http.cc ./httpserver.cc -o httpserver
 #	export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH

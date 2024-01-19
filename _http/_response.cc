@@ -255,12 +255,16 @@ RequestPathType TcpResponse::GetPathType(const std::string& path_buf)
 	if(0 == buf_len){ return RequestPathType::_NORMAL; }
 
 	const char* db = "DATABASE";
+	const char* dbr = "DATABASE_REPLY";
+	const char* dbc = "DATABASE_COUNT";
 	const char* api = "API";
 
 	for(size_t i = 0;i < buf_len;++i)
 	{
 		const char c = toupper(path_buf[i]);
 		if('\0' != *db && *db == c){ ++db; }
+		if('\0' != *dbr && *dbr == c){ ++dbr; }
+		if('\0' != *dbc && *dbc == c){ ++dbc; }
 		if('\0' != *api && *api == c){ ++api; }
 	}
 
@@ -272,7 +276,25 @@ RequestPathType TcpResponse::GetPathType(const std::string& path_buf)
 		return RequestPathType::_DATABASE;
 	}
 
-	if(3 == buf_len && '\0' == *api)
+	if(15 == buf_len)
+	{
+		if('\0' == *dbr)
+		{
+			// log...
+			MyLibs::CallLogInfo("TcpResponse::GetPathType() => DATABASE_REPLY");
+			MyLibs::CallDebug("TcpResponse::GetPathType() => DATABASE_REPLY");
+			return RequestPathType::_DATABASE_REPLY;
+		}
+		if('\0' == *dbc)
+		{
+			// log...
+			MyLibs::CallLogInfo("TcpResponse::GetPathType() => DATABASE_COUNT");
+			MyLibs::CallDebug("TcpResponse::GetPathType() => DATABASE_COUNT");
+			return RequestPathType::_DATABASE_COUNT;
+		}
+	}
+
+	if(4 == buf_len && '\0' == *api)
 	{
 		// log...
 		MyLibs::CallLogInfo(
@@ -409,7 +431,7 @@ void TcpResponse::Response200_DB(int sock_fd)
 		Response404(sock_fd);
 		return; 
 	}
-	if(false == database.GetTableRecord(records))
+	if(false == database.GetTableParentRecord(records))
 	{ 
 		Response404(sock_fd);
 		return; 
@@ -417,11 +439,14 @@ void TcpResponse::Response200_DB(int sock_fd)
 
 	for(auto& r: records)
 	{
-		body += r->nickname + ":";
-		body += r->email + ":";
-		body += r->email_md5 + ":";
+		body += r->id + ":";
+		body += r->parent_id + ":";
+		body += r->response_id + ":";
+		body += r->nick_name + ":";
+		body += r->mail + ":";
+		body += r->mail_md5 + ":";
 		body += r->create_at + ":";
-		body += r->content + ",";
+		body += r->comment + ",";
 	}
 
 	const size_t bodyLen = body.size();
@@ -466,6 +491,148 @@ void TcpResponse::Response200_DB(int sock_fd)
 	);
 	MyLibs::CallDebug(
 		"TcpResponse::Response200_DB() => Succeed\nResponse Header:\n",
+		buf
+	);
+}
+
+void TcpResponse::Response200_DBR(int sock_fd)
+{
+	std::vector<Record*> records;
+	DataBase database;
+	std::string buf;
+	std::string body;
+
+	buf += "HTTP/1.0 200 OK\r\n";
+	buf += "Server: Linux\r\n";
+	buf += "Content-Type: text/plain\r\n";
+	buf += "Connection: Close\r\n";
+
+	if(false == database.Connect())
+	{ 
+		Response404(sock_fd);
+		return; 
+	}
+	if(false == database.GetTableChildRecord(records))
+	{ 
+		Response404(sock_fd);
+		return; 
+	}
+
+	for(auto& r: records)
+	{
+		body += r->id + ":";
+		body += r->parent_id + ":";
+		body += r->response_id + ":";
+		body += r->nick_name + ":";
+		body += r->mail + ":";
+		body += r->mail_md5 + ":";
+		body += r->create_at + ":";
+		body += r->comment + ",";
+	}
+
+	const size_t bodyLen = body.size();
+	buf += "Content-Length: ";
+	buf += std::to_string(bodyLen);
+	buf += "\r\n\r\n";
+
+	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
+	{
+		// log...
+		MyLibs::CallLogError(
+			"TcpResponse::Response200_DBR() => send() fail.\nreason: ",
+			strerror(errno)
+		);
+		MyLibs::CallDebug(
+			"TcpResponse::Response200_DBR() => send() fail.\nreason: ",
+			strerror(errno)
+		);
+		return;
+	}
+
+	if(0 != bodyLen)
+	{
+		if(send(sock_fd,body.c_str(),bodyLen,0) <= 0)
+		{
+			// log...	
+			MyLibs::CallLogError(
+				"TcpResponse::Response200_DBR() => body send() fail.\nreason: ",
+				strerror(errno)
+			);
+			MyLibs::CallDebug(
+				"TcpResponse::Response200_DBR() => body send() fail.\nreason: ",
+				strerror(errno)
+			);
+			return;
+		}
+	}
+	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::Response200_DBR() => Succeed\nResponse Header:\n",
+		buf
+	);
+	MyLibs::CallDebug(
+		"TcpResponse::Response200_DBR() => Succeed\nResponse Header:\n",
+		buf
+	);
+}
+
+void TcpResponse::Response200_DBC(int sock_fd)
+{
+	std::string buf;
+	std::string body;
+	DataBase database;
+
+	buf += "HTTP/1.0 200 OK\r\n";
+	buf += "Server: Linux\r\n";
+	buf += "Content-Type: text/plain\r\n";
+	buf += "Connection: Close\r\n";
+
+	if(false == database.Connect()){ body += "0"; } 
+	else{ body += std::to_string(database.GetTableParentRecordNum()); }
+
+	int body_size = body.size();
+
+	buf += "Content-Length: ";
+	buf += std::to_string(body_size);
+	buf += "\r\n\r\n";
+
+	if(send(sock_fd,buf.c_str(),buf.size(),0) <= 0)
+	{
+		// log...
+		MyLibs::CallLogError(
+			"TcpResponse::Response200_DBC() => send() fail.\nreason: ",
+			strerror(errno)
+		);
+		MyLibs::CallDebug(
+			"TcpResponse::Response200_DBC() => send() fail.\nreason: ",
+			strerror(errno)
+		);
+		return;
+	}
+
+	if(0 != body_size)
+	{
+		if(send(sock_fd,body.c_str(),body_size,0) <= 0)
+		{
+			// log...	
+			MyLibs::CallLogError(
+				"TcpResponse::Response200_DBC() => body send() fail.\nreason: ",
+				strerror(errno)
+			);
+			MyLibs::CallDebug(
+				"TcpResponse::Response200_DBC() => body send() fail.\nreason: ",
+				strerror(errno)
+			);
+			return;
+		}
+	}
+	// log...
+	MyLibs::CallLogInfo(
+		"TcpResponse::Response200_DBC() => Succeed\nResponse Header:\n",
+		buf
+	);
+	MyLibs::CallDebug(
+		"TcpResponse::Response200_DBC() => Succeed\nResponse Header:\n",
 		buf
 	);
 }
@@ -571,6 +738,8 @@ void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
 	switch(GetPathType(url_buf))
 	{
 		case RequestPathType::_DATABASE: { Response200_DB(sock_fd); break; }
+		case RequestPathType::_DATABASE_COUNT: { Response200_DBC(sock_fd); break; } 
+		case RequestPathType::_DATABASE_REPLY: { Response200_DBR(sock_fd); break; } 
 		case RequestPathType::_API: { Response200_NF(sock_fd); break; }
 		default: 
 		{

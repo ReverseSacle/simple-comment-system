@@ -1,17 +1,19 @@
-body,
 #comment-block,
-#comment-block input,
-#comment-block textarea,
-#comment-block button,
-#comment-block ul,
-#comment-block li{
+#comment-block *{
     margin: 0;
     border: 0;
     padding: 0;
     background: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     list-style-type: none;
     outline: none;
-    font-family: Arial,Helvetica,sans-serif;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: 'Roboto', Arial, Helvetica, Sans-serif, Verdana;
 }
 
 #comment-block{
@@ -22,15 +24,13 @@ body,
     box-shadow: 0 .625rem 1.875rem -.9375rem rgba(0,0,0,0.1);
 }
 
-/* input area part  start-area*/
+/* input area part  start-area */
 #comment-block .input-block{
     position: absolute;
     width: 546px;
     height: 306px;
-    top: 10px;
-    left: 0;
-    right: 0;
     margin: auto;
+    margin-top: 15px;
     border: 2px solid #f7f7f7;
     box-shadow: 0 .625rem 1.875rem -.9375rem rgba(0,0,0,0.1);
 }
@@ -71,16 +71,20 @@ body,
 
 #comment-block .input-block .button-area .commit{
     float: right;
-    width: 36px;
-    height: 31px;
+    width: 40px;
+    height: 32px;
     background: 0 0;
     border-radius: .3rem;
     border: 1px solid #eff2f3;
-    margin-top: 2.8px;
     cursor: pointer;
     line-height: 0;
 }
-/* input area part  end-area*/
+
+#comment-block .input-block .button-area .commit:hover{
+    background: #e9546b;
+    border: 1px solid #eff2f3;
+}
+/* input area part end-area */
 
 
 /* comment show area */
@@ -95,45 +99,48 @@ body,
 }
 
 #comment-block .comment-container .info{
-    height: 50px;
-    font-size: 36px;
-    color: #283035;
-    font-weight: 400;
+    padding: .3125rem;
+    font-weight: 600;
+    font-size: 1.25em;
 }
 
-#comment-block .comment-container .comment-list{
+#comment-block .comment-list{
     display: none;
+    position: relative;
+    top: 10px;
 }
 
-#comment-block .comment-container .comment-list::before{
+#comment-block .comment-list::before{
     position: absolute;
     content: '';
     width: 2px;
     height: calc(100% - 50px);
     top: 45px;
-    left: 29px;
+    left: 27px;
     background: #c7cacb;
 }
 
-#comment-block .comment-container .comment-list::after{
+#comment-block .comment-list::after{
     position: absolute;
     content: '';
-    bottom: -1px;
-    left: 24px;
-    width: 7px;
-    height: 7px;
-    border: 3px solid #dee1e3;
-    border-radius: 50%;
     background: #c7cacb;
+    bottom: 0;
+    left: 23px;
+    width: 4px;
+    height: 4px;
+    border: 3px solid #dee1e3;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
 }
 
-#comment-block .comment-container .comment-list li{
+#comment-block .comment-list li{
     position: relative;
     margin-bottom: 15px;
     display: block;
 }
 
-#comment-block .comment-container .comment-list li::after{
+#comment-block .comment-list li::after{
     content: '';
     height: 0;
     width: 0;
@@ -141,7 +148,7 @@ body,
     clear: both;
 }
 
-#comment-block .comment-container .comment-list .main-level::after{
+#comment-block .comment-list .main-level::after{
     content: '';
     width: 0;
     height: 0;
@@ -149,35 +156,36 @@ body,
     clear: both;
 }
 
-#comment-block .comment-container .comment-list .main-level .avatar{
+#comment-block .comment-list .avatar{
     overflow: hidden;
     float: left;
     position: relative;
     width: 54px;
     height: 54px;
+    margin-bottom: 17px;
     border: 3px solid #FFF;
     border-radius: 4px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-#comment-block .comment-container .comment-list .main-level .avatar img{
-	position: absolute;
-	top: 0;
-	left: 0;
+#comment-block .comment-list .avatar img{
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
 }
 
 /* comment box of coment area start-area */
-#comment-block .comment-container .comment-list .main-level .comment-box{
+#comment-block .comment-list .comment-box{
     float: right;
     position: relative;
     width: 465px;
     box-shadow: 0 1px 1px rgba(0,0,0,0.15);
 }
 
-#comment-block .comment-container .comment-list .main-level .comment-box::before,
-#comment-block .comment-container .comment-list .main-level .comment-box::after{
+#comment-block .comment-list .comment-box::before,
+#comment-block .comment-list .comment-box::after{
     position: absolute;
     content: '';
     top: 8px;
@@ -190,14 +198,14 @@ body,
     display: block;
 }
 
-#comment-block .comment-container .comment-list .main-level .comment-box::before{
+#comment-block .comment-list .comment-box::before{
     left: -12px;
     border-width: 11px 13px 11px 0;
     border-color: transparent rgba(0,0,0,0.05);
 }
 
-#comment-block .comment-container .comment-list .main-level .comment-box::before,
-#comment-block .comment-container .comment-list .main-level .comment-box::after{
+#comment-block .comment-list .comment-box::before,
+#comment-block .comment-list .comment-box::after{
     position: absolute;
     content: '';
     top: 8px;
@@ -210,14 +218,14 @@ body,
     display: block;
 }
 
-#comment-block .comment-container .comment-list .main-level .comment-box::before{
+#comment-block .comment-list .comment-box::before{
     left: -12px;
     border-width: 11px 13px 11px 0;
     border-color: transparent rgba(0,0,0,0.05);
 }
 
 /* comment box head area start-area */
-#comment-block .comment-container .comment-list .main-level .comment-box .cbox-head{
+#comment-block .comment-list .comment-box .cbox-head{
     overflow: hidden;
     padding: 10px 12px;
     border-bottom: 1px solid #E5E5E5;
@@ -225,33 +233,34 @@ body,
     background: #FCFCFC;
 }
 
-#comment-block .comment-container .comment-list .main-level .comment-box .cbox-head
+#comment-block .comment-list .comment-box .cbox-head
 .cbauthor-name{
-    float: left;
-    margin-right: 10px;
     color: #283035;
     font-size: 14px;
     font-weight: 700;
+    float: left;
+    margin-right: 10px;
 }
 
-#comment-block .comment-container .comment-list .main-level .comment-box .cbox-head
+#comment-block .comment-list .comment-box .cbox-head
 span{
     float: left;
-    position: relative;
-    top: 1px;
     color: #999;
     font-size: 13px;
+    position: relative;
+    top: 1px;
 }
+
 /* comment box head area end-area */
 
 /* comment box content area start-area */
-#comment-block .comment-container .comment-list .main-level .comment-box .cbox-content{
-    overflow: hidden;
-    padding: 12px;
-    border-radius: 0 0 4px 4px;
+#comment-block .comment-list .comment-box{
     font-size: 15px;
     color: #595959;
-    background: #FFF;
+    -webkit-border-radius: 0 0 4px 4px;
+    -moz-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
 }
+
 /* comment box content area end-area */
-/* comment box of coment area end-area */
+/* comment box of comment area end-area */
