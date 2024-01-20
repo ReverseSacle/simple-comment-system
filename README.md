@@ -82,13 +82,13 @@ httpserver
     └── tcp.h
 ```
 
-++**获取源码**++
+**获取源码**
 
 ```bash
 git clone https://github.com/ReverseSacle/simple-comment-system.git
 ```
 
-++**正式操作**++
+**正式操作**
 
 (**info**) 这里以二进制的方式运行，默认在虚拟机上Linux系统(CentOS7)中运行。
 
