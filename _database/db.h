@@ -2,7 +2,7 @@
 #include"../mylibs.h"
 #include<mysql++/mysql++.h>
 
-// 表记录中一行的数据，处理表名
+// 数据库中的记录
 struct Record
 {
 	std::string id;
@@ -19,14 +19,14 @@ class DataBase
 {
 private:
 	mysqlpp::Connection conn;
-	std::string table_name;
-	std::string db_name;
+	std::string table_name;// 数据库的表名
+	std::string db_name;// 数据库对应表所属的库名
 public:
-	bool Connect();// 链接数据库
+	bool Connect();
 	bool TableIsNull();
 	int TableRecordCount();
 	int GetTableParentRecordNum();
-	bool TableInsert(Record* record);// 表记录插入
-	bool GetTableParentRecord(std::vector<Record*>& buf);// 表记录中的主评论记录读取
-	bool GetTableChildRecord(std::vector<Record*>& buf);// 表记录中的回复评论记录读取
+	bool TableInsert(Record* record);
+	bool GetTableParentRecord(std::vector<Record*>& buf);
+	bool GetTableChildRecord(std::vector<Record*>& buf);
 };

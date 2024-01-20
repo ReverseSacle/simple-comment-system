@@ -7,6 +7,7 @@
 class MyConfig
 {
 private:
+	// 数据库相关的配置信息
 	struct
 	{
 		std::string host;
@@ -15,12 +16,13 @@ private:
 		std::string database_name;
 		std::string table_name;
 	}DatabaseConfig;
+	// 日志器相关的配置信息
 	struct
 	{
 		bool enable = false;
 		std::string path = "./httpserver_log.log";
 	}LogConfig;
-	std::string root_dir = "docs";
+	std::string root_dir = "docs";// 服务器的文件的根目录
 	MyConfig();
 public:
 	static MyConfig& GetMyself();

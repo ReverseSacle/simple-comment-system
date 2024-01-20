@@ -1,5 +1,9 @@
 #include"_response.h"
 
+/**
+ * 获取Tcp请求的请求方法
+ * 由于请求方法名称的特殊性，这里使用简单的多对象字符串匹配方法
+**/ 
 RequestMethodType TcpResponse::GetMethodType(const std::string& method_buf)
 {
 	const size_t buf_len = method_buf.size();
@@ -157,6 +161,10 @@ RequestMethodType TcpResponse::GetMethodType(const std::string& method_buf)
 	return RequestMethodType::_UNKNOW;
 }
 
+/**
+ * 获取Tcp请求的请求文件类型
+ * 由于请求文件类型名称的特殊性，这里使用简单的多对象字符串匹配方法
+**/ 
 RequestFileType TcpResponse::GetFileType(const std::string& filename_buf)
 {
 	const size_t buf_len = filename_buf.size();
@@ -249,6 +257,10 @@ RequestFileType TcpResponse::GetFileType(const std::string& filename_buf)
 	return RequestFileType::_UNKNOW;
 }
 
+/**
+ * 获取Tcp请求的请求文件路径所属功能
+ * 由于所属功能名称的特殊性，这里使用简单的多对象字符串匹配方法
+**/ 
 RequestPathType TcpResponse::GetPathType(const std::string& path_buf)
 {
 	const size_t buf_len = path_buf.size();
@@ -316,6 +328,7 @@ RequestPathType TcpResponse::GetPathType(const std::string& path_buf)
 	return RequestPathType::_NORMAL;	
 }
 
+// HTTP 400响应
 void TcpResponse::Response400(int sock_fd)
 {
 	std::string buf;
@@ -348,6 +361,7 @@ void TcpResponse::Response400(int sock_fd)
 	);
 }
 
+// HTTP 404响应
 void TcpResponse::Response404(int sock_fd)
 {
 	std::string buf;
@@ -380,6 +394,7 @@ void TcpResponse::Response404(int sock_fd)
 	);
 }
 
+// HTTP 200响应，不附带内容
 void TcpResponse::Response200_NF(int sock_fd)
 {
 	std::string buf;
@@ -414,6 +429,7 @@ void TcpResponse::Response200_NF(int sock_fd)
 	); 
 }
 
+// HTTP 200响应，附带数据库主线评论的所有记录
 void TcpResponse::Response200_DB(int sock_fd)
 {
 	std::vector<Record*> records;
@@ -495,6 +511,7 @@ void TcpResponse::Response200_DB(int sock_fd)
 	);
 }
 
+// HTTP 200响应，附带数据库主线子评论的所有记录
 void TcpResponse::Response200_DBR(int sock_fd)
 {
 	std::vector<Record*> records;
@@ -576,6 +593,7 @@ void TcpResponse::Response200_DBR(int sock_fd)
 	);
 }
 
+// HTTP 200响应，附带数据库主线评论的数量
 void TcpResponse::Response200_DBC(int sock_fd)
 {
 	std::string buf;
@@ -637,6 +655,7 @@ void TcpResponse::Response200_DBC(int sock_fd)
 	);
 }
 
+// HTTP 200响应，附带请求中根目录的请求文件
 void TcpResponse::Response200(int sock_fd,const std::string& path,const off_t f_size)
 {
 	std::string buf;
@@ -733,6 +752,7 @@ void TcpResponse::Response200(int sock_fd,const std::string& path,const off_t f_
 	);
 }
 
+// HTTP 响应选择器，根据请求文件的所属功能来选择相应的状态相应
 void TcpResponse::ResponseSelector(int sock_fd,const std::string& url_buf)
 {
 	switch(GetPathType(url_buf))

@@ -1,5 +1,9 @@
 #include"_config.h"
 
+/**
+ * 构造函数
+ * 加载`_config.json`文件中的配置信息，通过第三方json库来解析
+**/
 MyConfig::MyConfig()
 {
 	std::ifstream json_file(_CONFIGFILEPATH);
@@ -45,6 +49,11 @@ MyConfig::MyConfig()
 		}
 	}
 }
+
+/**
+ * 获取MyConfig实例对象函数
+ * 通过static关键字的特性创建整个项目唯一的MyConfig实例对象
+**/
 
 MyConfig& MyConfig::GetMyself()
 {

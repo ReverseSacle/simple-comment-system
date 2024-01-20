@@ -16,9 +16,9 @@ class MyLibs
 {
 private:
 	MyLibs();
-	std::shared_ptr<spdlog::logger> file_logger;
+	std::shared_ptr<spdlog::logger> file_logger;// 日志器
 public:
-	static MyLibs& GetMyself();// 获取唯一MyLibs对象
+	static MyLibs& GetMyself();
 	// CallDebug..............
 	static void CallDebug(const std::string& str1);
 	static void CallDebug(const std::string& str1,const std::string& str2) ;
@@ -36,8 +36,7 @@ public:
 	static void CallLogError(const std::string& str1,const std::string& str2,const std::string& str3);
 	static void CallLogError(const std::string& str1,const std::string& str2,const std::string& str3,const std::string& str4);
 	/**********************/
-	static int _pow(int n,int m);// 求平方
-	static int _stoi(const char* strs);// char [] to int 
-	// 前缀匹配
+	static int _pow(int n,int m);
+	static int _stoi(const char* strs);
 	static bool StartWith(const std::string& buf,const std::string& prefix,size_t& index) ;
 };

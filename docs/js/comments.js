@@ -1,5 +1,7 @@
+/* 服务器地址 */
 const _host = "192.168.80.145";
 
+/* 前端POST请求 */
 async function _PostRequest(url,data)
 {
     try{
@@ -18,6 +20,7 @@ async function _PostRequest(url,data)
     } catch(error) { return false; }
 }
 
+/* 前端GET请求 */
 async function _GetRequest(url)
 {
     try{
@@ -30,6 +33,7 @@ async function _GetRequest(url)
     } catch(error) { return [false,""]; }
 }
 
+/* 获取主线评论的数量 */
 async function commentCount()
 {
     const responseData = await _GetRequest("/database_count");
@@ -40,6 +44,10 @@ async function commentCount()
     return count;
 }
 
+/**  
+ * 评论内容的文本的美化 
+ * 主要是将空格类字符去除，再根据自定义的`多少字符一行`规则来添加换行标签
+**/ 
 function textareaBeautify(textsLabel,cols)
 {
     var cache = "";
@@ -56,6 +64,15 @@ function textareaBeautify(textsLabel,cols)
     return cache;
 }
 
+/**
+ * 时间戳转换为格式化时间 
+ * 将时间戳与当前时间的差值算出，
+ * 再按天，时，分的顺序算，
+ * 时，中会减去经过的天数时间，
+ * 分，中会减去经的天数时间的总分钟与计算后时的总分钟。
+ * 展示时优先按天，时，分的顺序显示，从最前位开始，不为零就显示。
+ * 当天数超过365天后就直接按`年-月-日`的格式显示。
+**/ 
 function timestampTackle(timeSpendLabel,create_at)
 {
     const timeSpace = Date.now() - create_at;
@@ -82,6 +99,10 @@ function timestampTackle(timeSpendLabel,create_at)
     else{ timeSpendLabel.innerText = "" + f_minutes + " 分钟前"; }
 }
 
+/**
+ * 评论标签的头像处理 
+ * 适配了Gravatar API
+**/ 
 function avatarAppend(mainUserLabel,mail_md5)
 {
     var avatarLabel = document.createElement("div");
@@ -92,7 +113,11 @@ function avatarAppend(mainUserLabel,mail_md5)
     mainUserLabel.appendChild(avatarLabel);
 }
 
-function commentAppend(mainUserLabel,record)
+/** 
+ * 评论框中评论内容的添加 
+ * 就将从数据库表中获取的内容放到html的评论标签中
+**/ 
+function commentAppend(mainUserLabel,record,response_label = null)
 {
     var commentBoxLabel = document.createElement("div");
     commentBoxLabel.setAttribute("class","comment-box");
@@ -128,13 +153,32 @@ function commentAppend(mainUserLabel,record)
     var boxContent = document.createElement("span");
     boxContent.setAttribute("class","cbox-content");
 
-    boxContent.innerHTML = record.comment;
+    var response_user = "";
+    if(null != response_label)
+    {
+        response_user = (
+            "<a class=\"at\" href=\"#\">" + 
+            "@" + response_label.getAttribute("nick_name") + 
+            "</a>" + ","
+        );
+    }
+    boxContent.innerHTML = (
+        response_user + 
+        "<p>" + 
+        record.comment +
+        "</p>"
+    );
     commentBoxLabel.appendChild(boxContent);
 
     mainUserLabel.appendChild(commentBoxLabel);
 }
 
-function contentAppend(userBlock,record)
+/**
+ * 评论标签的样式创建以及内容添加
+ * 新的评论标签的样式和内容添加，
+ * 以及通过控制评论展示区css样式的高度属性来让展示区域实现变动
+**/ 
+function contentAppend(userBlock,record,response_label = null)
 {
     var commentBlock = document.getElementById("comment-block");
     var commentContainer = commentBlock.lastElementChild;
@@ -143,7 +187,7 @@ function contentAppend(userBlock,record)
     mainUserLabel.setAttribute("class","main-level clearfix");
 
     avatarAppend(mainUserLabel,record.mail_md5);
-    commentAppend(mainUserLabel,record);
+    commentAppend(mainUserLabel,record,response_label);
     userBlock.appendChild(mainUserLabel);
 
     /* state stretch */
@@ -154,6 +198,11 @@ function contentAppend(userBlock,record)
     commentContainer.style.height = newHeight - 325 +  "px";
 }
 
+/** 
+ * 回复按钮的输入区域的右上角的X的点击功能
+ * 就是将由评论按钮功能产生的评论输入区标签删减，
+ * 接着再调整发生高度变化的评论展示区和当前评论的内容展示区的高度到原来的样子
+**/ 
 function replyCancleClick(reply_label)
 {
     var cboxHead = reply_label.parentElement;
@@ -170,6 +219,11 @@ function replyCancleClick(reply_label)
     commentBox.removeChild(commentBox.lastElementChild);	
 }
 
+/** 
+ * 回复按钮的输入区域的右小角的提交的点击功能
+ * 与评论输入区域的提交按钮相比，回复按钮的评论输入区的提交按钮多了
+ * 父评论的查找，以及提交后，回复评论的输入区会消失
+**/ 
 async function replyCommitClick(reply_label)
 {
     var cboxHead = reply_label.parentElement;
@@ -218,6 +272,11 @@ async function replyCommitClick(reply_label)
     }
 }
 
+/** 
+ * 回复按钮的点击功能
+ * 就是在当前所点击的评论的标签下添加一个评论输入区，
+ * 额外多了个`x`撤销按钮，以及提交按钮的功能发生了变化
+**/ 
 function replyClick(reply_label)
 {
     var cboxHead = reply_label.parentElement;
@@ -296,6 +355,11 @@ function replyClick(reply_label)
     );
 }
 
+/** 
+ * 评论展示区的加载
+ * 向数据库请求主线评论数据，
+ * 接着将请求的内容按照html标签的所属关系依次建立并将内容添加上去
+**/ 
 async function commentPreShow()
 {
     const responseData = await _GetRequest("/database");
@@ -372,6 +436,7 @@ async function commentPreShow()
         var commentListFirstChild = commentList.firstElementChild;
 
         userBlock.setAttribute("id",record.id);
+        userBlock.setAttribute("nick_name",record.nick_name);
         userBlock.setAttribute("class","parent_id");	
 
         contentAppend(userBlock,record);
@@ -399,6 +464,11 @@ async function commentPreShow()
 	commentReplyShow();
 }
 
+/** 
+ * 评论输入区域的右下角的点击功能
+ * 就是将输入区输入的内容按照前后端规定的统一数据格式，发送给后端，
+ * 成功发送后，评论展示区的样式会发生变化
+**/ 
 async function buttonClick()
 {
     var commentBlock = document.getElementById("comment-block");
@@ -470,6 +540,13 @@ async function buttonClick()
     text_label.value = "";
 }
 
+
+/** 
+ * 评论展示区中主线子评论的加载 
+ * 由于之前显示的子评论会造成重复现象，故需先将所用主线评论中的主线子评论列表删除，
+ * 之后从后端数据库中获取主线子评论，
+ * 依次按照获取的记录中的parent_id来将主线子评论，添加到对应的主线评论下面
+*/
 async function commentReplyShow()
 {
     const responseData = await _GetRequest("/database_reply");
@@ -532,6 +609,7 @@ async function commentReplyShow()
             }
         }
         var parent_label = document.getElementById(record.parent_id);
+        var response_label = document.getElementById(record.response_id);
         var childList = parent_label.lastElementChild;
         var userBlock = document.createElement("li");
 
@@ -546,10 +624,11 @@ async function commentReplyShow()
 
         userBlock.setAttribute("id",record.id);
         userBlock.setAttribute("class","child_id");
+        userBlock.setAttribute("nick_name",record.nick_name);
         userBlock.setAttribute("parent_id",record.parent_id);
         userBlock.setAttribute("response_id",record.response_id);
 
-        contentAppend(userBlock,record);
+        contentAppend(userBlock,record,response_label);
         if(null == childList.firstChild)
         {
             childList.appendChild(userBlock);
@@ -574,6 +653,7 @@ async function commentReplyShow()
     }
 }
 
+/* 输入http链接时客户端加载响应函数 */
 window.onload = async function(){
     var commentBlock = document.getElementById("comment-block");
     var inputBlock = commentBlock.firstElementChild;

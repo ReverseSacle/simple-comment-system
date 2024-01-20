@@ -1,5 +1,6 @@
 #include"tcp.h"
 
+// 构造函数，配置socket通信地址结构体(协议族，通信目标地址)
 TcpStream::TcpStream()
 {
 	memset(&sock_addr,0,sock_addr_size);
@@ -7,12 +8,19 @@ TcpStream::TcpStream()
 	sock_addr.sin_addr.s_addr = htonl(_IPUSER);// 允许接入的IP用户
 }
 
+// 析构函数，socket断开时自动退出
 TcpStream::~TcpStream()
 {
 	if(-1 == tcp_sock_fd){ return; }
 	close(tcp_sock_fd);
 }
 
+
+/**
+ * 服务端Tcp连接建立函数
+ * 用于socket通道建立，包含socket资源申请，
+ * 通信地址结构体的通信端口绑定，通道地址绑定到。
+**/
 bool TcpStream::Construct(const size_t port)
 {
 	if(-1 != tcp_sock_fd){ return true; }
@@ -46,6 +54,7 @@ bool TcpStream::Construct(const size_t port)
 	return true;
 }
 
+// 设置监听模式
 bool TcpStream::ToListen()
 {
 	if(-1 == tcp_sock_fd){ return false; }
@@ -64,6 +73,11 @@ bool TcpStream::ToListen()
 	return true;
 }
 
+
+/**
+ * 读取TCP字节流中的一行数据
+ * 一个字节一个字节的读取，通过判断`\n\r`字符串来确定是否终止
+**/
 bool TcpStream::StreamParse_Line(int sock_fd,std::string& buffer)
 {
 	if(-1 == sock_fd){ return false; }	

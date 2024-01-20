@@ -1,5 +1,6 @@
 #include"db.h"
 
+// 连接数据库
 bool DataBase::Connect()
 {
 	auto& db_config = MyConfig::GetDatabaseConfig();
@@ -33,6 +34,7 @@ bool DataBase::Connect()
 	return true;
 }
 
+// 判断数据库中的表是否存在
 bool DataBase::TableIsNull()
 {
 	mysqlpp::Query query = conn.query();
@@ -55,6 +57,7 @@ bool DataBase::TableIsNull()
 	return true;
 }
 
+// 获取数据库表中记录的总数量
 int DataBase::TableRecordCount()
 {
 	if(false == TableIsNull()){
@@ -77,6 +80,7 @@ int DataBase::TableRecordCount()
 	return static_cast<int>(query.store()[0][0]);
 }
 
+// 获取数据库表中的主线评论数量
 int DataBase::GetTableParentRecordNum()
 {
 	if(false == TableIsNull()){
@@ -101,6 +105,10 @@ int DataBase::GetTableParentRecordNum()
 	return static_cast<int>(query.store()[0][0]);
 }
 
+/**
+ * 数据库表记录的插入
+ * 通过parent_id和response_id，来区分主线评论数据与主线子评论数据的存储
+**/ 
 bool DataBase::TableInsert(Record* record)
 {
 	try{
@@ -222,6 +230,7 @@ bool DataBase::TableInsert(Record* record)
 	return true;
 }
 
+// 获取数据库表中主线评论的所用记录
 bool DataBase::GetTableParentRecord(std::vector<Record*>& buf)
 {
 	mysqlpp::Query query = conn.query();
@@ -297,6 +306,7 @@ bool DataBase::GetTableParentRecord(std::vector<Record*>& buf)
 	return true;
 }	
 
+// 获取数据库表中主线子评论的所用记录
 bool DataBase::GetTableChildRecord(std::vector<Record*>& buf)
 {
 	mysqlpp::Query query = conn.query();

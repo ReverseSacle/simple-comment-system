@@ -1,5 +1,9 @@
 #include"http.h"
 
+/**
+ * 请求url路径格式的标准化
+ * 将斜杠统一为正斜杠
+**/
 std::string HttpServer::UrlFormat(std::string& url_buf)
 {
 	const size_t buf_len = url_buf.size();
@@ -32,6 +36,10 @@ std::string HttpServer::UrlFormat(std::string& url_buf)
 	return url;
 }
 
+/**
+ * HTTP请求内容解析
+ * 将请求方法，请求路径以及，body内容拆分
+**/
 bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 {
 	std::string buf;
@@ -122,6 +130,10 @@ bool HttpServer::ReqContentReceive(int sock_fd,ReqContent* req_content)
 	return true;	
 }
 
+/**
+ * HTTP请求Body部分的解析
+ * 将body内容按照前后端统一的数据格式拆分为数据库表中对应记录的属性
+**/
 void HttpServer::BodyTackle(const std::string& body_buf,Record* record)
 {
 	const size_t n = body_buf.size();
@@ -176,6 +188,7 @@ void HttpServer::BodyTackle(const std::string& body_buf,Record* record)
 	);
 }
 
+// 处理HTTP的GET方法
 void HttpServer::GetMethod(int sock_fd,const std::string& url_buf)
 {
 	const size_t buf_len = url_buf.size();
@@ -204,6 +217,7 @@ void HttpServer::GetMethod(int sock_fd,const std::string& url_buf)
 	TcpResponse::ResponseSelector(sock_fd,UrlFormat(url)); 
 }
 
+// 处理HTTP的POST方法
 void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 {
 	DataBase database;
@@ -248,6 +262,7 @@ void HttpServer::PostMethod(int sock_fd,const std::string& body_buf)
 	TcpResponse::ResponseSelector(sock_fd,"/api");
 }
 
+// 接收HTTP请求报文，并处理相关操作
 void HttpServer::HttpAccept(int sock_fd)
 {
 	if(-1 == sock_fd)

@@ -14,8 +14,9 @@ int main(int argc,char* argv[])
 	// 屏蔽所有Linux信号
 	for(int i = 0;i < 100;++i){ signal(i,SIG_IGN); }
 	signal(2,ExitAction);// 捕获Ctrl c中断 信号
-	signal(15,ExitAction);// 捕获Kill命令 信号
+	signal(15,ExitAction);// 捕获Kill终止 信号
 
+	// 服务端的配置，包含socket建立，切换为监听模式
 	if(false == server_tcp.Construct(80)){ return 0; }
 	if(false == server_tcp.ToListen()){ return 0; }
 

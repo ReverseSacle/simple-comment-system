@@ -1,10 +1,16 @@
 # 网站留言评论系统(simple-comment-system-pre)
 
+## 预览
+
+![](./preview.png)
+
 ## 概述
 
-此项目为从`计算机入门水平`升阶为`计算机进阶-前期水平`的升阶项目，**初稿**部分以简单、简洁性和完整性为主，除了必要的数据库API外，没有额外的外部插件库，全是由个人手动实现的底层源码。
+此项目为从`计算机入门水平`升阶为`计算机进阶-前期水平`的升阶项目。
 
-此处的C语言指C，不包含C++，使用的C标准在C99之下(不包括C99)。<br/>
+**初稿**部分以简单、简洁性和完整性为主，除了必要的数据库API外，没有额外的外部插件库，全是由个人手动实现的底层C语言源码。
+
+对于初稿所指的C语言指C，不包含C++，使用的C标准在C99之下(不包括C99)。<br/>
 该项目在**Linux系统CentOS 7**下编译，测试和运行，具体操作包含
 
 + **HTML和CSS的源码**编写
@@ -19,11 +25,11 @@
 + 服务器进程源码的**日志监听模式**编写
 + 对后端服务器进程纯C语言源码进行**高性能化**的处理
 
+**中稿**部分以附加功能为主，主要是将编程语言切换到cpp，并利用了cpp中的第三方库添加并改善了相关功能。
+
 在该项目的介绍文章中能感受到下列所述内容：设计思路、分析思路、如何寻找思路、如何改善思路、通过思路如何设计、设计过程中出现问题如何解决问题、实现过程中如何确定应用那些知识等。
 
-**源码解析及设计思路** - [网站留言评论系统-初稿的(思路与教程)文章](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)
-
-目前只有初稿部分，中稿不定期更新，终稿不打算做了，基本上**中稿**以【额外附加功能、样式和功能完善，bug预测和修复】为主。
+**设计思路与源码解析，以及项目实现的全过程** - [网站留言评论系统-初稿与中稿的(思路与教程)文章](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)
 
 ## 分支说明
 
@@ -76,23 +82,24 @@ httpserver
     └── tcp.h
 ```
 
-通过git命令获取源码
+++**获取源码**++
 
 ```bash
 git clone https://github.com/ReverseSacle/simple-comment-system.git
 ```
 
-(**info**) 阅览[→Linux(CentOS 7)](https://www.reversesacle.com/computer-science/programming/c-language/network-programming/Linux-basic/)，从**准备条件**部分到**通过客户端连接服务器**部分，以及额外的**客户端(SFTP)命令**部分。`SecureCRT`软件连接Linux虚拟机环境，连接之后在顶栏标签处右键选`Connect SFTP Session`，之后可通过SFTP命令向Linux虚拟机环境传输或获取文件。SFTP可用[FileZilla](https://filezilla-project.org/)代替。
+++**正式操作**++
 
-(**info**) 使用前需预先安装MySQL，详细看[该项目介绍文章第一部分](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)的**Linux服务器处理进程的数据库链接**内容。
+(**info**) 这里以二进制的方式运行，默认在虚拟机上Linux系统(CentOS7)中运行。
 
-确保Linux虚拟机环境安装了make工具，倘若没有可使用安装命令 - `yum -y install make`
+(**info**) 编译前需预先安装MySQL，详细请看[→该项目介绍文章第一部分](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)的【**Linux服务器处理进程的数据库链接**】区块。
 
-此外，还需修改`comments.js`文件开头的`_host`变量的值，改为`SecureCRT`连接的IP地址。
-
-环境依赖配置完成后，可输入make命令开始编译并运行
+(**info**) 运行前需修改`./docs/js/comments.js`文件开头的`_host`变量的值，改为虚拟机的IP地址。
 
 ```bash
+# (可选)预先确保Linux虚拟机环境安装了make工具
+yum -y install make
+
 # 配置库连接位置
 vi /etc/ld.so.conf
 ## 新的一行添加 /usr/local/lib
@@ -100,11 +107,12 @@ vi /etc/ld.so.conf
 ## 退出后输入命令 ldconfig
 
 cd simple-comment-system
+
 make httptest
-## 详细操作可查看makefile
+## make操作详细操作可查看makefile文件
 ```
 
-可通过`ctrl c`中断，之后直接执行`./httpserver`即可启动服务端进程，再在浏览器中的输入栏输入`http://(SecureCRT连接的IP地址)/index.html`，回车即可看到评论系统的前端界面。
+可通过`ctrl c`中断，之后直接执行`./httpserver`即可启动服务端进程，再在浏览器中的输入栏输入`http://(虚拟机IP地址)/index.html`，回车即可看到评论系统的前端界面。
 
 ## 第三方依赖
 
@@ -125,3 +133,4 @@ make httptest
 - 完善之前的改进部分并优化项目代码结构，使用`C++11`特性改善了代码 - `tag v0.0.4`
 - 更改数据库的存储数据类型，并利用`crypto-js`进行SHA256的哈希处理，以此适配avatar头像。部分代码的结构进行了调整 - `tag v0.0.5`
 - 更改数据库的表结构，添加了评论回复功能的前端样式、前端回复功能的交互代码、后端交互代码和服务器后端与前端的交互代码，之后，对前端的样式代码进行了文件拆分，对前端的js代码进行了重构 - `tag v0.0.6`
+- 添加了回复对象的显示，并对所有代码进行了简明的注释 - `tag v0.0.7`
