@@ -27,7 +27,7 @@
 
 **中稿**部分以附加功能为主，主要是将编程语言切换到cpp，并利用了cpp中的第三方库添加并改善了相关功能。
 
-**设计思路与源码解析，以及项目实现的全过程** - [网站留言评论系统-初稿与中稿的(思路与教程)文章](https://www.reversesacle.com/computer-science/programming/c-language/project/comment-system-part1/)
+**设计思路与源码解析，以及项目实现的全过程** - [网站留言评论系统-初稿与中稿的(思路与教程)文章](https://www.reversesacle.com/computer-science/programming/c-language/c-project/comment-system-part1/)
 
 ## 分支说明
 
